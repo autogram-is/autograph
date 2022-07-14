@@ -7,6 +7,6 @@ This project adds a few conveniences:
 * Optional `created` and `modified` timestamp fields on each entity
 * Optional soft delete in place of hard SQL DELETEs
 * Optional `type` column for each entity to keep that metadata out of the JSON `body` column. 
-* Typescript interfaces and base classes that leverage the 'type' column
+* Typescript interfaces and base classes that leverage the `type` column
 
 It's very much a work in progress; in addition, while it supports storage of _graphlike_ data, SQLite lacks support for graph query languages and other conveniences from more advances systems.
