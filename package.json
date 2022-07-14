@@ -1,0 +1,39 @@
+{
+  "name": "node-simple-graph",
+  "version": "1.0.0",
+  "description": "Graph data storage in SQLite",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "lint": "gts lint",
+    "clean": "gts clean",
+    "compile": "tsc",
+    "fix": "gts fix",
+    "prepare": "npm run compile",
+    "pretest": "npm run compile",
+    "posttest": "npm run lint"
+  },
+  "files": [
+    "build/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/autogram-is/node-simple-graph.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/autogram-is/node-simple-graph/issues"
+  },
+  "homepage": "https://github.com/autogram-is/node-simple-graph#readme",
+  "devDependencies": {
+    "@types/jest": "^28.1.4",
+    "@types/node": "^14.11.2",
+    "gts": "^4.0.0",
+    "jest": "^28.1.2",
+    "ts-jest": "^28.0.5",
+    "typescript": "^4.7"
+  },
+  "dependencies": {}
+}
