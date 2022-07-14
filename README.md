@@ -4,7 +4,7 @@ Inspired by David Leadbeater's [SQLite as a document database](https://dgl.cx/20
 
 This project adds a few conveniences:
 
-* Optional Create and Update timestamp fields on each entity
+* Optional `created` and `modified` timestamp fields on each entity
 * Optional soft delete in place of hard SQL DELETEs
 * Optional `type` column for each entity to keep that metadata out of the JSON `body` column. 
 * Typescript interfaces and base classes that leverage the 'type' column
