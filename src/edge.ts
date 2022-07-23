@@ -6,9 +6,7 @@ export class Edge extends Entity {
   readonly target: string;
   [key: string]: any;
 
-  getTable() {
-    return 'node';
-  }
+  getTable() { return 'edge'; }
 
   constructor(source:string, predicate:string, target:string, data:Record<string, any> = {}) {
     super();

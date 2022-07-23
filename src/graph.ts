@@ -1,6 +1,5 @@
-import * as bsql from 'better-sqlite3';
-import { Database, SqliteError } from 'better-sqlite3'
-import { SourceMap } from 'module';
+import * as DatabaseConstructor from "better-sqlite3";
+import { Database, Statement, Transaction, RunResult, SqliteError } from "better-sqlite3";
 import { Entity, Node, Edge } from '.'
 
 export enum Operator {
@@ -20,8 +19,8 @@ export enum Operator {
 export class Graph {
   readonly db:Database;
 
-  constructor(filename:string = ':memory:', customConfig:Partial<bsql.Options> = {}) {
-    this.db = bsql(filename, customConfig);
+  constructor(filename:string = ':memory:', customConfig:Partial<DatabaseConstructor.Options> = {}) {
+    this.db = DatabaseConstructor(filename, customConfig);
   }
 
   private createTables() {
@@ -55,62 +54,63 @@ export class Graph {
     `);
   }
 
-  
-  getNode(id:string) {
-
+  getNode(id:string):Node {
+    const sql = `SELECT data FROM node WHERE id='?'`;
+    const resultString = this.db.prepare(sql).pluck().get(id) as string;
+    return JSON.parse(resultString) as Node;
   }
-  matchNode(properties:Record<string, any>):Node[] {
+  matchNodes(properties:Record<string, any>):Node[] {
     return [];
   }
 
-
   getEdge(id:string) {
-    
+    const sql = `SELECT data FROM edge WHERE id='?'`;
+    const resultString = this.db.prepare(sql).pluck().get(id) as string;
+    return JSON.parse(resultString) as Edge;
   }
   
   getEdges(source:string, target:string):Edge[]
   getEdges(source:string, predicate:string, target?:string):Edge[] {
+    let sql:string = `SELECT data FROM edge WHERE `;
     if (source && predicate && target) {
-      // load by all
+      sql += `source='?' AND predicate='?' AND target='?'`;
     } else {
-      // load just one
+      sql += `source='?' AND target='?'`;
     }
-    return [];
+    return this.db.prepare(sql).all(arguments).map(r => JSON.parse(r.data) as Edge)
   }
 
-  getInboundEdges(target:string):Edge[]
-  getInboundEdges(target:string, predicate?:string):Edge[]
   getInboundEdges(target:string, predicate?:string, properties?:Record<string, any>):Edge[] {
+    let sql:string = `SELECT data FROM edge WHERE `;
     if (target && predicate && properties) {
-
+      sql += `target='?' AND predicate='?'`;
     } else if (target && predicate) {
-
+      sql += `target='?' AND predicate='?'`;
     } else {
-
+      sql += `target='?'`;
     }
-    return [];
+    return this.db.prepare(sql).all(arguments).map(r => JSON.parse(r.data) as Edge)
   }
 
-  getOutboundEdges(source:string):Edge[]
-  getOutboundEdges(source:string, predicate?:string):Edge[]
   getOutboundEdges(source:string, predicate?:string, properties?:Record<string, any>):Edge[] {
+    let sql:string = `SELECT data FROM edge WHERE `;
     if (source && predicate && properties) {
-
+      sql += `source='?' AND predicate='?'`;
     } else if (source && predicate) {
-
+      sql += `source='?' AND predicate='?'`;
     } else {
-
+      sql += `source='?'`;
     }
-    return [];
+    return this.db.prepare(sql).all(arguments).map(r => JSON.parse(r.data) as Edge)
   }
 
   save(e:Entity):boolean {
-    const sql = `INSERT INTO ${e.getTable()} VALUES(json($))`;
-    return (this.db.prepare(sql).run(e).changes) ? true : false;
+    const sql = `INSERT INTO ${e.getTable()} VALUES(json(?))`;
+    return (this.db.prepare(sql).run(e.serialize()).changes) ? true : false;
   }
 
   delete(e:Entity): boolean { 
-    const sql = `DELETE FROM ${e.getTable()} WHERE id=?)`;
+    const sql = `DELETE FROM ${e.getTable()} WHERE id='?')`;
     return (this.db.prepare(sql).run(e.id).changes) ? true : false;
   }
 }
