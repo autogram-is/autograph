@@ -35,6 +35,8 @@ export class Graph {
     return this.db.prepare(sql).all(clauses.params).map(r => JSON.parse(r.data) as Edge)
   }
 
+  
+
   connect(source:Node, predicate:string, target:Node, data:Record<string, any>):Edge {
     const edge = new Edge(source.id, predicate, target.id, data);
     this.save(edge);
@@ -63,10 +65,20 @@ export class Graph {
     return this.db.prepare(sql).run(n.id).changes
   }
 
-  nodeExists(id:string, type?:string):boolean {
-    const sql = Statements.countNodes
+  nodeExists(id:string):boolean {
+    return this.nodeCount(Where().equals('id', id)) > 0;
   }
-  edgeCount(source:string, predicate?:string, target?:string):number {
-
+  edgeExists(source:string, target:string, predicate?:string):boolean {
+    const where = Where().equals('source', source).equals('target', target);
+    if (predicate) where.equals('predicate', predicate);
+    return this.nodeCount(where) > 0;
+  }
+  nodeCount(where:WhereBuilder):number {
+    const sql = Statements.countNodes + where.sql;
+    return this.db.prepare(sql).pluck().get(where.params)
+  }
+  edgeCount(where:WhereBuilder):number {
+    const sql = Statements.countEdges + where.sql;
+    return this.db.prepare(sql).pluck().get(where.params)
   }
 }
