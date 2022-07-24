@@ -22,9 +22,10 @@ export class Edge extends Entity {
     this.target = target;
 
     for (const k in data) this[k] = data[k];
+    this.assignId();
   }
 
-  protected get uniqueProperties(): unknown {
+  protected get uniqueValues(): unknown {
     return [this.source, this.predicate, this.target];
   }
 }

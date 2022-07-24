@@ -1,26 +1,19 @@
 import {v4 as uuidv4} from 'uuid';
 import {v5 as uuidv5} from 'uuid';
+import {NIL} from 'uuid';
 import * as hash from 'object-hash';
 
 export const NSG_UUID_NAMESPACE = '9fc3e7e5-59d7-4d55-afa0-98a978f49bab';
 export abstract class Entity {
-  protected _id?: string;
+  id: string = NIL;
   abstract getTable(): string;
 
-  get id(): string {
-    if (this._id === undefined) this._id = this.generateEntityId();
-    return this._id;
-  }
-  set id(value: string) {
-    this._id = value;
+  assignId() {
+    this.id = this.id === NIL ? Entity.generateId(this.uniqueValues) : this.id;
   }
 
-  serialize() {
+  serialize(): string {
     return JSON.stringify(this);
-  }
-
-  protected generateEntityId(): string {
-    return Entity.generateId(this.uniqueValues);
   }
 
   protected get uniqueValues(): unknown {

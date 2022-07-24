@@ -1,7 +1,17 @@
 import {Entity} from '../src';
 import {validate as isValidUuid} from 'uuid';
 
-test('Uuid-from-anything works', () => {
+class testEntity extends Entity {
+  customProperty = '';
+  protected get uniqueValues(): string {
+    return this.customProperty;
+  }
+  getTable() {
+    return 'none';
+  }
+}
+
+test('Uuids generated from any propertie', () => {
   const randomUuid = Entity.generateId();
   expect(isValidUuid(randomUuid)).toBe(true);
 
@@ -19,4 +29,10 @@ test('Uuid-from-anything works', () => {
 
   const objectUuid = Entity.generateId({property: 'test', property2: 2});
   expect(isValidUuid(objectUuid)).toBe(true);
+});
+
+test('Unique properties extracted', () => {
+  const obj = new testEntity();
+  obj.customProperty = 'foo';
+  expect(isValidUuid(obj.id)).toBe(true);
 });

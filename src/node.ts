@@ -12,5 +12,6 @@ export class Node extends Entity {
   constructor(data: Record<string, unknown> = {}) {
     super();
     for (const k in data) this[k] = data[k];
+    this.assignId();
   }
 }
