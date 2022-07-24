@@ -1,6 +1,5 @@
-import {TextEncoder} from 'util';
 import {v4 as uuidv4} from 'uuid';
-import {stringify as bytesToUuid} from 'uuid';
+import {v5 as uuidv5} from 'uuid';
 import * as hash from 'object-hash';
 
 export abstract class Entity {
@@ -29,12 +28,11 @@ export abstract class Entity {
 
   static generateId(hashValue?: unknown): string {
     if (hashValue) {
-      if (typeof(hashValue) !== 'object') {
-        hashValue = { data: hashValue };
+      if (typeof hashValue !== 'object') {
+        hashValue = {data: hashValue};
       }
-      const sha1 = hash(hashValue as Object);
-      const byteArr = new TextEncoder().encode(sha1);
-      return bytesToUuid(byteArr);
+      const hashOutput: Buffer = hash(<object>hashValue, {encoding: 'buffer'});
+      return uuidv5(hashOutput, uuidv5.URL);
     } else {
       return uuidv4();
     }
