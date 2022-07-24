@@ -1,7 +1,7 @@
 import {Entity} from '../src';
 import {validate as isValidUuid} from 'uuid';
 
-class testEntity extends Entity {
+export class TestEntity extends Entity {
   customProperty = '';
   protected get uniqueValues(): string {
     return this.customProperty;
@@ -28,7 +28,7 @@ test('Uuids generated from any property', () => {
 });
 
 test('Unique properties extracted', () => {
-  const obj = new testEntity();
+  const obj = new TestEntity();
   obj.customProperty = 'foo';
   expect(isValidUuid(obj.id)).toBe(true);
 });

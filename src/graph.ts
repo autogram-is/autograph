@@ -1,8 +1,9 @@
 import * as DatabaseConstructor from 'better-sqlite3';
-import {Database} from 'better-sqlite3';
-import {Entity, Node, Edge} from '.';
+import {Database, SqliteError} from 'better-sqlite3';
 import {Where, WhereBuilder} from './sql/where-builder';
 import {Statements} from './sql/statements';
+
+import {Entity, Node, Edge} from './';
 
 export class Graph {
   readonly db: Database;
@@ -12,9 +13,10 @@ export class Graph {
     customConfig: Partial<DatabaseConstructor.Options> = {}
   ) {
     this.db = DatabaseConstructor(filename, customConfig);
+    this.verifyTablesExist();
   }
 
-  private createTables() {
+  private verifyTablesExist() {
     this.db.exec(Statements.schema);
   }
 
@@ -23,12 +25,21 @@ export class Graph {
   }
 
   matchNodes(clauses: WhereBuilder, limit?: number): Node[] {
-    let sql: string = Statements.selectNodes + clauses.sql;
-    if (limit) sql += ` LIMIT ${limit}`;
-    return this.db
-      .prepare(sql)
-      .all(clauses.parameters)
-      .map(r => JSON.parse(r.data) as Node);
+    let sql = '';
+    try {
+      sql = `${Statements.selectNodes} WHERE ${clauses.sql}`;
+      if (limit) sql += ` LIMIT ${limit}`;
+      return this.db
+        .prepare(sql)
+        .all(clauses.parameters)
+        .map(r => JSON.parse(r.data) as Node);
+    } catch(e: unknown) {
+      if (e instanceof SqliteError) {
+        console.log(sql);
+        throw(e);
+      }
+      throw(e);
+    }
   }
 
   getEdge(id: string): Edge | undefined {
@@ -36,7 +47,8 @@ export class Graph {
   }
 
   matchEdges(clauses: WhereBuilder, limit?: number): Edge[] {
-    let sql: string = Statements.selectEdges + clauses.sql;
+    let sql = '';
+    sql = `${Statements.selectEdges} WHERE ${clauses.sql}`;
     if (limit) sql += ` LIMIT ${limit}`;
     return this.db
       .prepare(sql)
@@ -55,9 +67,28 @@ export class Graph {
     return edge;
   }
 
-  save(e: Entity): boolean {
-    const sql = `INSERT INTO ${e.getTable()} VALUES(json(?))`;
-    return this.db.prepare(sql).run(e.serialize()).changes ? true : false;
+  save(entities: Entity|Entity[]): number {
+    let affected = 0;
+    let sql:string = '';
+
+    if (entities instanceof Entity) {
+      sql = `INSERT INTO ${entities.getTable()} VALUES(json('@'))`;
+      affected += this.db.prepare(sql).run(entities.getTable(), entities.serialize()).changes
+    }
+    else {
+      const nodes = entities.filter(e => e.getTable() == 'node');
+      const edges = entities.filter(e => e.getTable() == 'edge');
+      nodes.forEach(n => {
+        sql = `INSERT INTO node VALUES(json('@'))`;
+        affected += this.db.prepare(sql).run(n.serialize()).changes;
+      })
+      edges.forEach(e => {
+        sql = `INSERT INTO edge VALUES(json('@'))`;
+        affected += this.db.prepare(sql).run(e.serialize()).changes;
+      })
+    }
+
+    return affected;
   }
 
   delete(e: Entity): number {
