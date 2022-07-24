@@ -73,21 +73,21 @@ export class Graph {
 
     if (entities instanceof Entity) {
       sql = this.db.prepare(
-        `INSERT INTO ${entities.getTable()} VALUES(json(?))`
+        `INSERT INTO ${entities.getTable()} (data) VALUES(json(?))`
       );
       affected += sql.run(entities.serialize()).changes;
     } else {
       entities
         .filter(e => e instanceof Node)
         .forEach(n => {
-          sql = this.db.prepare('INSERT INTO node VALUES(json(?))');
+          sql = this.db.prepare('INSERT INTO node (data) VALUES(json(?))');
           affected += sql.run(n.serialize()).changes;
         });
-        
+
       entities
         .filter(e => e instanceof Edge)
         .forEach(e => {
-          sql = this.db.prepare('INSERT INTO edge VALUES(json(?))');
+          sql = this.db.prepare('INSERT INTO edge (data) VALUES(json(?))');
           affected += sql.run(e.serialize()).changes;
         });
     }

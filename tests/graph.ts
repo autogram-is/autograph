@@ -3,8 +3,8 @@ import {Node, Edge, Graph} from '../src';
 let g: Graph;
 
 test('Graph initializes schema', () => {
-  g = new Graph();
-  expect(g.db.prepare('SELECT * from node').pluck().get()).toBe(undefined);
+  g = new Graph(':memory:');
+  expect(g.db.prepare('SELECT id from node').pluck().get()).toBe(undefined);
 });
 
 test('Nodes and edges persist', () => {
