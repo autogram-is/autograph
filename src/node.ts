@@ -1,16 +1,16 @@
-import { Entity } from './entity'
+import {Entity} from './entity';
 
 export class Node extends Entity {
-  readonly type:string = 'node';
-  labels:string[] = [];
-  [key:string]: any;
+  readonly type: string = 'node';
+  labels: string[] = [];
+  [key: string]: any;
 
   getTable() {
     return 'node';
   }
 
-  constructor(data:Record<string, any> = {}) {
+  constructor(data: Record<string, any> = {}) {
     super();
-    for (let k in data) this[k] = data[k];
+    for (const k in data) this[k] = data[k];
   }
 }

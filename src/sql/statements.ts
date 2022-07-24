@@ -1,15 +1,15 @@
 export const Statements = {
-    selectNodes: `SELECT data FROM node `,
-    countNodes: `SELECT COUNT(id) as ids FROM node `,
-    saveNode: `INSERT INTO node VALUES(json(@)) `,
-    deleteNodes: `DELETE FROM node `,
-  
-    selectEdges: `SELECT data FROM edge `,
-    countEdges: `SELECT COUNT(id) as ids FROM edge `,
-    saveEdge: `INSERT INTO edge VALUES(json(@)) `,
-    deleteEdges: `DELETE FROM edge `,
-  
-    schema: `
+  selectNodes: 'SELECT data FROM node ',
+  countNodes: 'SELECT COUNT(id) as ids FROM node ',
+  saveNode: 'INSERT INTO node VALUES(json(@)) ',
+  deleteNodes: 'DELETE FROM node ',
+
+  selectEdges: 'SELECT data FROM edge ',
+  countEdges: 'SELECT COUNT(id) as ids FROM edge ',
+  saveEdge: 'INSERT INTO edge VALUES(json(@)) ',
+  deleteEdges: 'DELETE FROM edge ',
+
+  schema: `
       CREATE TABLE IF NOT EXISTS node (
         id   TEXT GENERATED ALWAYS AS (json_extract(data, '$.id')) VIRTUAL NOT NULL UNIQUE
         type TEXT GENERATED ALWAYS AS (json_extract(data, '$.type')) VIRTUAL NOT NULL
@@ -36,4 +36,4 @@ export const Statements = {
       CREATE INDEX IF NOT EXISTS edge_idx ON node(predicate);
       CREATE INDEX IF NOT EXISTS target_idx ON edge(target);
     `,
-  }
+};
