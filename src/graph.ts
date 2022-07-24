@@ -48,7 +48,7 @@ export class Graph {
     source: Node,
     predicate: string,
     target: Node,
-    data: Record<string, any>
+    data: Record<string, unknown>
   ): Edge {
     const edge = new Edge(source.id, predicate, target.id, data);
     this.save(edge);

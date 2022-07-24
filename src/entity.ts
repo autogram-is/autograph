@@ -27,9 +27,12 @@ export abstract class Entity {
     return false;
   }
 
-  static generateId(hashValue?: any): string {
+  static generateId(hashValue?: unknown): string {
     if (hashValue) {
-      const sha1 = hash(hashValue);
+      if (typeof(hashValue) !== 'object') {
+        hashValue = { data: hashValue };
+      }
+      const sha1 = hash(hashValue as Object);
       const byteArr = new TextEncoder().encode(sha1);
       return bytesToUuid(byteArr);
     } else {

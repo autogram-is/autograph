@@ -11,8 +11,8 @@ export class WhereBuilder {
   }
 
   toString(): string {
-    const stack: any[] = [...this.parameters];
-    return this.sql.replace('@', () => stack.pop().toString());
+    const stack: SqlValue[] = [...this.parameters];
+    return this.sql.replace('@', () => stack.pop()?.toString() ?? '');
   }
 
   private columnize(column: string) {

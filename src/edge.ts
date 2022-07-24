@@ -4,7 +4,7 @@ export class Edge extends Entity {
   readonly source: string;
   readonly predicate: string;
   readonly target: string;
-  [key: string]: any;
+  [propName: string]: unknown;
 
   getTable() {
     return 'edge';
@@ -14,7 +14,7 @@ export class Edge extends Entity {
     source: string,
     predicate: string,
     target: string,
-    data: Record<string, any> = {}
+    data: Record<string, unknown> = {}
   ) {
     super();
     this.source = source;
@@ -24,7 +24,7 @@ export class Edge extends Entity {
     for (const k in data) this[k] = data[k];
   }
 
-  protected get uniqueProperties(): any {
+  protected get uniqueProperties(): unknown {
     return [this.source, this.predicate, this.target];
   }
 }
