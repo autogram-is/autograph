@@ -5,7 +5,7 @@ const testNode = new Node({customProperty: [0, 1, 2, 3]});
 
 test('Nodes receive an id', () => {
   const idNode = new Node();
-  expect(idNode.id === NIL).toBe(false);
+  expect(idNode.id).not.toBe(NIL);
   expect(isValidUuid(idNode.id)).toBe(true);
 });
 
