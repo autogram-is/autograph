@@ -1,5 +1,5 @@
 import * as DatabaseConstructor from 'better-sqlite3';
-import {Database, SqliteError} from 'better-sqlite3';
+import {Database, SqliteError, Statement} from 'better-sqlite3';
 import {Where, WhereBuilder} from './sql/where-builder';
 import {Statements} from './sql/statements';
 
@@ -33,12 +33,12 @@ export class Graph {
         .prepare(sql)
         .all(clauses.parameters)
         .map(r => JSON.parse(r.data) as Node);
-    } catch(e: unknown) {
+    } catch (e: unknown) {
       if (e instanceof SqliteError) {
         console.log(sql);
-        throw(e);
+        throw e;
       }
-      throw(e);
+      throw e;
     }
   }
 
@@ -67,25 +67,29 @@ export class Graph {
     return edge;
   }
 
-  save(entities: Entity|Entity[]): number {
+  save(entities: Entity | Entity[]): number {
     let affected = 0;
-    let sql:string = '';
+    let sql: Statement;
 
     if (entities instanceof Entity) {
-      sql = `INSERT INTO ${entities.getTable()} VALUES(json('@'))`;
-      affected += this.db.prepare(sql).run(entities.getTable(), entities.serialize()).changes
-    }
-    else {
-      const nodes = entities.filter(e => e.getTable() == 'node');
-      const edges = entities.filter(e => e.getTable() == 'edge');
-      nodes.forEach(n => {
-        sql = `INSERT INTO node VALUES(json('@'))`;
-        affected += this.db.prepare(sql).run(n.serialize()).changes;
-      })
-      edges.forEach(e => {
-        sql = `INSERT INTO edge VALUES(json('@'))`;
-        affected += this.db.prepare(sql).run(e.serialize()).changes;
-      })
+      sql = this.db.prepare(
+        `INSERT INTO ${entities.getTable()} VALUES(json(?))`
+      );
+      affected += sql.run(entities.serialize()).changes;
+    } else {
+      entities
+        .filter(e => e instanceof Node)
+        .forEach(n => {
+          sql = this.db.prepare('INSERT INTO node VALUES(json(?))');
+          affected += sql.run(n.serialize()).changes;
+        });
+        
+      entities
+        .filter(e => e instanceof Edge)
+        .forEach(e => {
+          sql = this.db.prepare('INSERT INTO edge VALUES(json(?))');
+          affected += sql.run(e.serialize()).changes;
+        });
     }
 
     return affected;
@@ -94,7 +98,7 @@ export class Graph {
   delete(e: Entity): number {
     let affected = 0;
 
-    const sql = `DELETE FROM ${e.getTable()} WHERE id='@')`;
+    const sql = `DELETE FROM ${e.getTable()} WHERE id=?)`;
     affected = this.db.prepare(sql).run(e.id).changes;
 
     if (e instanceof Node) {
@@ -104,7 +108,7 @@ export class Graph {
   }
 
   deleteNodeEdges(n: Node): number {
-    const sql = Statements.deleteEdges + " WHERE source = '@' OR target = '@'";
+    const sql = Statements.deleteEdges + ' WHERE source = ? OR target = ?';
     return this.db.prepare(sql).run(n.id).changes;
   }
 

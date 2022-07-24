@@ -12,7 +12,7 @@ export class WhereBuilder {
 
   toString(): string {
     const stack: SqlValue[] = [...this.parameters];
-    return this.sql.replace('@', () => stack.pop()?.toString() ?? '');
+    return this.sql.replace('?', () => stack.pop()?.toString() ?? '');
   }
 
   private columnize(column: string) {
@@ -20,7 +20,7 @@ export class WhereBuilder {
   }
 
   private placeholder(value: SqlAnyValue): string {
-    return typeof value === 'string' ? "'@'" : '@';
+    return typeof value === 'string' ? '?' : '?';
   }
 
   addRaw(clause: string, parameters?: SqlAnyValue) {
@@ -88,18 +88,18 @@ export class WhereBuilder {
   }
 
   like(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} LIKE '%@%'`, value);
+    return this.addRaw(`${this.columnize(property)} LIKE '%?%'`, value);
   }
 
   startsWith(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} LIKE '@%'`, value);
+    return this.addRaw(`${this.columnize(property)} LIKE '?%'`, value);
   }
 
   endsWith(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} LIKE '%@'`, value);
+    return this.addRaw(`${this.columnize(property)} LIKE '%?'`, value);
   }
 
   notLike(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} NOT LIKE '%@%'`, value);
+    return this.addRaw(`${this.columnize(property)} NOT LIKE '%?%'`, value);
   }
 }
