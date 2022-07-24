@@ -2,6 +2,7 @@ import {v4 as uuidv4} from 'uuid';
 import {v5 as uuidv5} from 'uuid';
 import * as hash from 'object-hash';
 
+export const NSG_UUID_NAMESPACE = '9fc3e7e5-59d7-4d55-afa0-98a978f49bab';
 export abstract class Entity {
   protected _id?: string;
   abstract getTable(): string;
@@ -19,10 +20,10 @@ export abstract class Entity {
   }
 
   protected generateEntityId(): string {
-    return Entity.generateId(this.uniqueProperties);
+    return Entity.generateId(this.uniqueValues);
   }
 
-  protected get uniqueProperties(): unknown {
+  protected get uniqueValues(): unknown {
     return false;
   }
 
@@ -32,7 +33,7 @@ export abstract class Entity {
         hashValue = {data: hashValue};
       }
       const hashOutput: Buffer = hash(<object>hashValue, {encoding: 'buffer'});
-      return uuidv5(hashOutput, uuidv5.URL);
+      return uuidv5(hashOutput, NSG_UUID_NAMESPACE);
     } else {
       return uuidv4();
     }
