@@ -17,6 +17,6 @@ test('Nodes and edges persist', () => {
   expect(g.db.prepare('SELECT COUNT(1) FROM node').pluck().get()).toBe(2);
   expect(g.db.prepare('SELECT COUNT(1) FROM edge').pluck().get()).toBe(1);
 
-  const n1Loaded = g.getNode(n1.id) as Node;
+  const n1Loaded = g.getNode(n1.id) ?? {};
   expect(n1).toMatchObject(n1Loaded);
 });
