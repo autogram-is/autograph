@@ -7,8 +7,10 @@ import {Entity, Node, Edge} from './';
 
 type GraphOptions = {
   filename: string;
-  softDelete: boolean;
-  timestamps: boolean;
+  useSoftDeletes: boolean;
+  supportsSoftDelete: boolean;
+  saveTimestamp: boolean;
+  supportsTimestamp: boolean;
   databaseConfig: Partial<DatabaseConstructor.Options>;
 };
 export class Graph {
@@ -19,8 +21,10 @@ export class Graph {
     this.config = {
       ...{
         filename: ':memory',
-        softDelete: false,
-        timestamps: false,
+        useSoftDeletes: false,
+        supportsSoftDelete: false,
+        saveTimestamp: false,
+        supportsTimestamp: false,
         databaseConfig: {},
       },
       ...options,
@@ -42,45 +46,75 @@ export class Graph {
       this.db.exec(Statements.schemaTables);
       this.db.exec(Statements.schemaIndexes);
     }
-    if (this.config.softDelete && !schemaState.includes('node.deleted')) {
-      this.db.exec(Statements.schemaSoftDelete);
+
+    if (schemaState.includes('node.deleted')) {
+      this.config.supportsSoftDelete = true;
+    } else {
+      if (this.config.useSoftDeletes) {
+        this.db.exec(Statements.schemaSoftDelete);
+      }
     }
-    if (this.config.timestamps && !schemaState.includes('node.created')) {
-      this.db.exec(Statements.schemaTimeStamp);
+
+    if (this.config.saveTimestamp) {
+      if (!schemaState.includes('node.created')) {
+        this.db.exec(Statements.schemaTimeStamp);
+      }
     }
   }
 
-  getNode<N extends Node = Node>(id: string): N | undefined {
-    return this.get<N>('node', id);
+  getNode<N extends Node = Node>(
+    id: string,
+    includeDeleted = false
+  ): N | undefined {
+    return this.get<N>('node', id, includeDeleted);
   }
-  getEdge<E extends Edge = Edge>(id: string): E | undefined {
-    return this.get<E>('edge', id);
+  getEdge<E extends Edge = Edge>(
+    id: string,
+    includeDeleted = false
+  ): E | undefined {
+    return this.get<E>('edge', id, includeDeleted);
   }
   private get<T extends Entity = Entity>(
     table: string,
-    id: string
+    id: string,
+    includeDeleted = false
   ): T | undefined {
-    return this.match<T>(table, Where().equals('id', id))[0] ?? undefined;
+    return (
+      this.match<T>(table, Where().equals('id', id), includeDeleted)[0] ??
+      undefined
+    );
   }
 
-  matchNode<N extends Node = Node>(clauses: WhereBuilder, limit?: number): N[] {
-    return this.match<N>('node', clauses, limit);
+  matchNode<N extends Node = Node>(
+    where: WhereBuilder,
+    includeDeleted = false,
+    limit?: number
+  ): N[] {
+    return this.match<N>('node', where, includeDeleted, limit);
   }
-  matchEdge<E extends Edge = Edge>(clauses: WhereBuilder, limit?: number): E[] {
-    return this.match<E>('edge', clauses, limit);
+  matchEdge<E extends Edge = Edge>(
+    where: WhereBuilder,
+    includeDeleted = false,
+    limit?: number
+  ): E[] {
+    return this.match<E>('edge', where, includeDeleted, limit);
   }
   private match<T extends Entity = Entity>(
     table: string,
-    clauses: WhereBuilder,
+    where: WhereBuilder,
+    includeDeleted = false,
     limit?: number
   ): T[] {
+    if (this.config.supportsSoftDelete && !includeDeleted) {
+      where.equals('deleted', 0);
+    }
     let sql = '';
     try {
-      sql = Entify(Statements.select, 'edge') + clauses.sql;
+      sql = Entify(Statements.select, 'edge') + where.sql;
       if (limit) sql += ` LIMIT ${limit}`;
       return this.db
         .prepare(sql)
-        .all(clauses.parameters)
+        .all(where.parameters)
         .map(r => JSON.parse(r.data) as T);
     } catch (e: unknown) {
       if (e instanceof SqliteError) {
@@ -123,9 +157,14 @@ export class Graph {
   }
 
   delete(e: Entity): number {
+    let sql: string;
     let affected = 0;
 
-    const sql = Entify(Statements.deleteEntity, e.getTable()) + 'id=?';
+    if (this.config.useSoftDeletes && this.config.supportsSoftDelete) {
+      sql = Entify(Statements.softDeleteEntity, e.getTable()) + 'id=?';
+    } else {
+      sql = Entify(Statements.deleteEntity, e.getTable()) + 'id=?';
+    }
     affected = this.db.prepare(sql).run(e.id).changes;
 
     if (e instanceof Node) {
@@ -140,16 +179,24 @@ export class Graph {
     return this.db.prepare(sql).run(n.id).changes;
   }
 
-  exists(table: string, id: string): boolean {
-    return this.count(table, Where().equals('id', id)) > 0;
+  exists(table: string, id: string, includeDeleted = false): boolean {
+    return this.count(table, Where().equals('id', id), includeDeleted) > 0;
   }
-  count(table: string, where: WhereBuilder): number {
+  count(table: string, where: WhereBuilder, includeDeleted = false): number {
+    if (this.config.supportsSoftDelete && !includeDeleted) {
+      where.equals('deleted', 0);
+    }
     const sql = Entify(Statements.count, table) + where.sql;
     return this.db.prepare(sql).pluck().get(where.parameters);
   }
-  edgeExists(source: string, target: string, predicate?: string): boolean {
+  edgeExists(
+    source: string,
+    target: string,
+    predicate?: string,
+    includeDeleted = false
+  ): boolean {
     const where = Where().equals('source', source).equals('target', target);
     if (predicate) where.equals('predicate', predicate);
-    return this.count('edge', where) > 0;
+    return this.count('edge', where, includeDeleted) > 0;
   }
 }

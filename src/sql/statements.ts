@@ -6,7 +6,7 @@ export const Statements = {
   count: 'SELECT COUNT(id) as ids FROM $TABLE ',
   save: 'INSERT INTO $TABLE (data) VALUES(json(?))',
   deleteEntity: 'DELETE FROM $TABLE WHERE ',
-  softDelete: 'UPDATE $TABLE SET (deleted = 1) WHERE ',
+  softDeleteEntity: 'UPDATE $TABLE SET (deleted = 1) WHERE ',
 
   schemaInfo: `
     SELECT 'node.' || node.name AS column FROM pragma_table_info('node') node
