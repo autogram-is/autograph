@@ -157,7 +157,8 @@ export class Graph {
   }
 
   delete(e: Entity): number {
-    let sql: string;
+    let sql = '';
+    let edgeCascadeSql = '';
     let affected = 0;
 
     if (this.config.useSoftDeletes && this.config.supportsSoftDelete) {
@@ -165,18 +166,23 @@ export class Graph {
     } else {
       sql = Entify(Statements.deleteEntity, e.getTable()) + 'id=?';
     }
-    affected = this.db.prepare(sql).run(e.id).changes;
 
-    if (e instanceof Node) {
-      affected += this.deleteNodeEdges(e);
+    // First handle inbound, outbound edges
+    if (e.getTable() === 'node') {
+      if (this.config.useSoftDeletes && this.config.supportsSoftDelete) {
+        edgeCascadeSql =
+          Entify('Statements.softDeleteEntity', 'edge') +
+          'target=?id OR edge=?id';
+      } else {
+        edgeCascadeSql =
+          Entify('Statements.deleteEntity', 'edge') + 'target=?id OR edge=?id';
+      }
+
+      affected = this.db.prepare(edgeCascadeSql).run(e.id).changes;
     }
-    return affected;
-  }
 
-  deleteNodeEdges(n: Node): number {
-    const sql =
-      Entify(Statements.deleteEntity, 'node') + ' source = ? OR target = ?';
-    return this.db.prepare(sql).run(n.id).changes;
+    affected = this.db.prepare(sql).run(e.id).changes;
+    return affected;
   }
 
   exists(table: string, id: string, includeDeleted = false): boolean {

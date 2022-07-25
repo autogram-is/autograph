@@ -6,7 +6,7 @@ export const Where = () => new WhereBuilder();
 export class WhereBuilder {
   parameters: SqlValue[] = [];
   placeholder = '?';
-  andOr = 'AND'
+  andOr = 'AND';
   private clauses: string[] = [];
   get sql(): string {
     return ' ' + this.clauses.join(`\n ${this.andOr} `);
