@@ -5,6 +5,7 @@ type SqlAnyValue = SqlValue | SqlMultiValue;
 export const Where = () => new WhereBuilder();
 export class WhereBuilder {
   parameters: SqlValue[] = [];
+  placeholder = '?';
   private clauses: string[] = [];
   get sql(): string {
     return ' ' + this.clauses.join('\n AND ');
@@ -12,15 +13,14 @@ export class WhereBuilder {
 
   toString(): string {
     const stack: SqlValue[] = [...this.parameters];
-    return this.sql.replace('?', () => stack.pop()?.toString() ?? '');
+    return this.sql.replace(
+      this.placeholder,
+      () => stack.pop()?.toString() ?? ''
+    );
   }
 
   private columnize(column: string) {
     return column.startsWith('$') ? `json_extract(data, '${column}')` : column;
-  }
-
-  private placeholder(value: SqlAnyValue): string {
-    return typeof value === 'string' ? '?' : '?';
   }
 
   addRaw(clause: string, parameters?: SqlAnyValue) {
@@ -36,10 +36,7 @@ export class WhereBuilder {
   }
 
   add(property: string, predicate: string, value: SqlAnyValue) {
-    return this.addRaw(
-      `${this.columnize(property)} ${predicate} ${this.placeholder(value)}`,
-      value
-    );
+    return this.addRaw(`${this.columnize(property)} ${predicate} ?`, value);
   }
 
   equals(property: string, value: SqlValue): WhereBuilder {
@@ -67,14 +64,17 @@ export class WhereBuilder {
   }
 
   in(property: string, value: SqlMultiValue): WhereBuilder {
-    const placeholders = value.map(v => this.placeholder(v)).join(',');
-    return this.addRaw(this.columnize(property) + ' IN ' + placeholders, value);
+    const placeholders = value.map(() => this.placeholder).join(',');
+    return this.addRaw(
+      `${this.columnize(property)} IN (${placeholders})`,
+      value
+    );
   }
 
   notIn(property: string, value: SqlMultiValue): WhereBuilder {
-    const placeholders = value.map(v => this.placeholder(v)).join(',');
+    const placeholders = value.map(() => this.placeholder).join(',');
     return this.addRaw(
-      this.columnize(property) + ' NOT IN ' + placeholders,
+      `${this.columnize(property)} NOT IN (${placeholders})`,
       value
     );
   }
@@ -88,18 +88,30 @@ export class WhereBuilder {
   }
 
   like(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} LIKE '%?%'`, value);
+    return this.addRaw(
+      `${this.columnize(property)} LIKE '%${this.placeholder}%'`,
+      value
+    );
   }
 
   startsWith(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} LIKE '?%'`, value);
+    return this.addRaw(
+      `${this.columnize(property)} LIKE '${this.placeholder}%'`,
+      value
+    );
   }
 
   endsWith(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} LIKE '%?'`, value);
+    return this.addRaw(
+      `${this.columnize(property)} LIKE '%${this.placeholder}'`,
+      value
+    );
   }
 
   notLike(property: string, value: string): WhereBuilder {
-    return this.addRaw(`${this.columnize(property)} NOT LIKE '%?%'`, value);
+    return this.addRaw(
+      `${this.columnize(property)} NOT LIKE '%${this.placeholder}%'`,
+      value
+    );
   }
 }
