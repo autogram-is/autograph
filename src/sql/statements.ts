@@ -4,7 +4,10 @@ export const Entify = (query: string, table: string): string => {
 export const Statements = {
   select: 'SELECT data FROM $TABLE WHERE ',
   count: 'SELECT COUNT(id) as ids FROM $TABLE ',
-  save: 'INSERT INTO $TABLE (data) VALUES(json(?))',
+  save: `INSERT INTO $TABLE (data)
+    VALUES(json(?))
+    ON CONFLICT(id) DO UPDATE SET data=data;
+  `,
   deleteEntity: 'DELETE FROM $TABLE WHERE ',
   softDeleteEntity: 'UPDATE $TABLE SET (deleted = 1) WHERE ',
 
@@ -19,7 +22,7 @@ export const Statements = {
       type TEXT GENERATED ALWAYS AS (json_extract(data, '$.type')) VIRTUAL NOT NULL,
       labels JSON GENERATED ALWAYS AS (json_extract(data, '$.labels')) VIRTUAL NOT NULL,
       data JSON,
-      UNIQUE(id) ON CONFLICT REPLACE
+      UNIQUE(id)
     );
 
     CREATE TABLE IF NOT EXISTS edge (
@@ -28,7 +31,7 @@ export const Statements = {
       predicate  TEXT GENERATED ALWAYS AS (json_extract(data, '$.predicate')) VIRTUAL NOT NULL,
       target     TEXT GENERATED ALWAYS AS (json_extract(data, '$.target')) VIRTUAL NOT NULL,
       data JSON,
-      UNIQUE(id) ON CONFLICT REPLACE,
+      UNIQUE(id),
       FOREIGN KEY(source) REFERENCES node(id),
       FOREIGN KEY(target) REFERENCES node(id)
     );
