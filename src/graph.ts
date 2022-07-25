@@ -1,7 +1,7 @@
 import * as DatabaseConstructor from 'better-sqlite3';
 import {Database, SqliteError, Statement} from 'better-sqlite3';
 import {Where, WhereBuilder} from './sql/where-builder';
-import {Statements} from './sql/statements';
+import {Entify, Statements} from './sql/statements';
 
 import {Entity, Node, Edge} from './';
 
@@ -17,22 +17,42 @@ export class Graph {
   }
 
   private verifyTablesExist() {
-    this.db.exec(Statements.schema);
+    this.db.exec(Statements.schemaTables);
+    this.db.exec(Statements.schemaIndexes);
   }
 
-  getNode(id: string): Node | undefined {
-    return this.matchNodes(Where().equals('id', id))[0] ?? undefined;
+  getNode<N extends Node = Node>(id: string): N | undefined {
+    return this.get<N>('node', id);
+  }
+  getEdge<E extends Edge = Edge>(id: string): E | undefined {
+    return this.get<E>('edge', id);
+  }
+  private get<T extends Entity = Entity>(
+    table: string,
+    id: string
+  ): T | undefined {
+    return this.match<T>(table, Where().equals('id', id))[0] ?? undefined;
   }
 
-  matchNodes(clauses: WhereBuilder, limit?: number): Node[] {
+  matchNode<N extends Node = Node>(clauses: WhereBuilder, limit?: number): N[] {
+    return this.match<N>('node', clauses, limit);
+  }
+  matchEdge<E extends Edge = Edge>(clauses: WhereBuilder, limit?: number): E[] {
+    return this.match<E>('edge', clauses, limit);
+  }
+  private match<T extends Entity = Entity>(
+    table: string,
+    clauses: WhereBuilder,
+    limit?: number
+  ): T[] {
     let sql = '';
     try {
-      sql = `${Statements.selectNodes} WHERE ${clauses.sql}`;
+      sql = Entify(Statements.select, 'edge') + clauses.sql;
       if (limit) sql += ` LIMIT ${limit}`;
       return this.db
         .prepare(sql)
         .all(clauses.parameters)
-        .map(r => JSON.parse(r.data) as Node);
+        .map(r => JSON.parse(r.data) as T);
     } catch (e: unknown) {
       if (e instanceof SqliteError) {
         console.log(sql);
@@ -40,20 +60,6 @@ export class Graph {
       }
       throw e;
     }
-  }
-
-  getEdge(id: string): Edge | undefined {
-    return this.matchEdges(Where().equals('id', id))[0] ?? undefined;
-  }
-
-  matchEdges(clauses: WhereBuilder, limit?: number): Edge[] {
-    let sql = '';
-    sql = `${Statements.selectEdges} WHERE ${clauses.sql}`;
-    if (limit) sql += ` LIMIT ${limit}`;
-    return this.db
-      .prepare(sql)
-      .all(clauses.parameters)
-      .map(r => JSON.parse(r.data) as Edge);
   }
 
   connect(
@@ -69,27 +75,19 @@ export class Graph {
 
   save(entities: Entity | Entity[]): number {
     let affected = 0;
-    let sql: Statement;
-
+    let stmt: Statement;
     if (entities instanceof Entity) {
-      sql = this.db.prepare(
-        `INSERT INTO ${entities.getTable()} (data) VALUES(json(?))`
-      );
-      affected += sql.run(entities.serialize()).changes;
+      stmt = this.db.prepare(Entify(Statements.save, entities.getTable()));
+      affected += stmt.run(entities.serialize()).changes;
     } else {
-      entities
-        .filter(e => e instanceof Node)
-        .forEach(n => {
-          sql = this.db.prepare('INSERT INTO node (data) VALUES(json(?))');
-          affected += sql.run(n.serialize()).changes;
-        });
-
-      entities
-        .filter(e => e instanceof Edge)
-        .forEach(e => {
-          sql = this.db.prepare('INSERT INTO edge (data) VALUES(json(?))');
-          affected += sql.run(e.serialize()).changes;
-        });
+      ['node', 'edge'].forEach((table: string) => {
+        entities
+          .filter(e => e.getTable() === table)
+          .forEach(e => {
+            stmt = this.db.prepare(Entify(Statements.save, table));
+            affected += stmt.run(e.serialize()).changes;
+          });
+      });
     }
 
     return affected;
@@ -98,7 +96,7 @@ export class Graph {
   delete(e: Entity): number {
     let affected = 0;
 
-    const sql = `DELETE FROM ${e.getTable()} WHERE id=?)`;
+    const sql = Entify(Statements.deleteEntity, e.getTable()) + 'id=?';
     affected = this.db.prepare(sql).run(e.id).changes;
 
     if (e instanceof Node) {
@@ -108,24 +106,21 @@ export class Graph {
   }
 
   deleteNodeEdges(n: Node): number {
-    const sql = Statements.deleteEdges + ' WHERE source = ? OR target = ?';
+    const sql =
+      Entify(Statements.deleteEntity, 'node') + ' source = ? OR target = ?';
     return this.db.prepare(sql).run(n.id).changes;
   }
 
-  nodeExists(id: string): boolean {
-    return this.nodeCount(Where().equals('id', id)) > 0;
+  exists(table: string, id: string): boolean {
+    return this.count(table, Where().equals('id', id)) > 0;
+  }
+  count(table: string, where: WhereBuilder): number {
+    const sql = Entify(Statements.count, table) + where.sql;
+    return this.db.prepare(sql).pluck().get(where.parameters);
   }
   edgeExists(source: string, target: string, predicate?: string): boolean {
     const where = Where().equals('source', source).equals('target', target);
     if (predicate) where.equals('predicate', predicate);
-    return this.nodeCount(where) > 0;
-  }
-  nodeCount(where: WhereBuilder): number {
-    const sql = Statements.countNodes + where.sql;
-    return this.db.prepare(sql).pluck().get(where.parameters);
-  }
-  edgeCount(where: WhereBuilder): number {
-    const sql = Statements.countEdges + where.sql;
-    return this.db.prepare(sql).pluck().get(where.parameters);
+    return this.count('edge', where) > 0;
   }
 }
