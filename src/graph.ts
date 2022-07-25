@@ -92,6 +92,7 @@ export class Graph {
   ): N[] {
     return this.match<N>('node', where, includeDeleted, limit);
   }
+
   matchEdge<E extends Edge = Edge>(
     where: WhereBuilder,
     includeDeleted = false,
@@ -99,6 +100,7 @@ export class Graph {
   ): E[] {
     return this.match<E>('edge', where, includeDeleted, limit);
   }
+  
   private match<T extends Entity = Entity>(
     table: string,
     where: WhereBuilder,
@@ -188,13 +190,7 @@ export class Graph {
   exists(table: string, id: string, includeDeleted = false): boolean {
     return this.count(table, Where().equals('id', id), includeDeleted) > 0;
   }
-  count(table: string, where: WhereBuilder, includeDeleted = false): number {
-    if (this.config.supportsSoftDelete && !includeDeleted) {
-      where.equals('deleted', 0);
-    }
-    const sql = Entify(Statements.count, table) + where.sql;
-    return this.db.prepare(sql).pluck().get(where.parameters);
-  }
+
   edgeExists(
     source: string,
     target: string,
@@ -204,5 +200,13 @@ export class Graph {
     const where = Where().equals('source', source).equals('target', target);
     if (predicate) where.equals('predicate', predicate);
     return this.count('edge', where, includeDeleted) > 0;
+  }
+
+  count(table: string, where: WhereBuilder, includeDeleted = false): number {
+    if (this.config.supportsSoftDelete && !includeDeleted) {
+      where.equals('deleted', 0);
+    }
+    const sql = Entify(Statements.count, table) + where.sql;
+    return this.db.prepare(sql).pluck().get(where.parameters);
   }
 }
