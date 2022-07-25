@@ -3,9 +3,6 @@
   "version": "0.1.0",
   "description": "Quick and dirty graph data storage in SQLite.",
   "main": "index.js",
-  "engines": {
-    "node": ">=10.13.0"
-  },
   "scripts": {
     "test": "jest --config jestconfig.json",
     "lint": "gts lint",
@@ -23,8 +20,8 @@
     "type": "git",
     "url": "git+https://github.com/autogram-is/node-simple-graph.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["graph", "sqlite"],
+  "author": "Jeff Eaton <jeff@autogram.is> (http://eaton.fyi/)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/autogram-is/node-simple-graph/issues"
