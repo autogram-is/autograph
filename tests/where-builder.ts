@@ -1,4 +1,4 @@
-import {Where} from '../src/sql/where-builder';
+import {Where} from '../src/sql';
 
 test('simple where clause works', () => {
   const sql = Where().equals('myColumn', 20);

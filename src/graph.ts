@@ -1,7 +1,7 @@
 import * as DatabaseConstructor from 'better-sqlite3';
 import {Database, SqliteError, Statement} from 'better-sqlite3';
-import {Where, WhereBuilder} from './sql/where-builder';
-import {Entify, Statements} from './sql/statements';
+import {Where, WhereBuilder} from './sql';
+import {Entify, Statements} from './sql';
 
 import {Entity, Node, Edge} from './';
 
@@ -100,7 +100,7 @@ export class Graph {
   ): E[] {
     return this.match<E>('edge', where, includeDeleted, limit);
   }
-  
+
   private match<T extends Entity = Entity>(
     table: string,
     where: WhereBuilder,
