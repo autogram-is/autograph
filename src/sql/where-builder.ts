@@ -7,8 +7,8 @@ export class WhereBuilder {
   parameters: SqlValue[] = [];
   placeholder = '?';
   private clauses: string[] = [];
-  get sql(): string {
-    return ' ' + this.clauses.join('\n AND ');
+  get sql(andOr:'AND'|'OR' = 'AND'): string {
+    return ' ' + this.clauses.join(`\n${andOr} `);
   }
 
   toString(): string {
