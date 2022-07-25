@@ -5,20 +5,49 @@ import {Entify, Statements} from './sql/statements';
 
 import {Entity, Node, Edge} from './';
 
+type GraphOptions = {
+  filename: string;
+  softDelete: boolean;
+  timestamps: boolean;
+  databaseConfig: Partial<DatabaseConstructor.Options>;
+};
 export class Graph {
   readonly db: Database;
+  readonly config: GraphOptions;
 
-  constructor(
-    filename = ':memory:',
-    customConfig: Partial<DatabaseConstructor.Options> = {}
-  ) {
-    this.db = DatabaseConstructor(filename, customConfig);
-    this.verifyTablesExist();
+  constructor(options: Partial<GraphOptions>) {
+    this.config = {
+      ...{
+        filename: ':memory',
+        softDelete: false,
+        timestamps: false,
+        databaseConfig: {},
+      },
+      ...options,
+    };
+    this.db = DatabaseConstructor(
+      this.config.filename,
+      this.config.databaseConfig
+    );
+    this.verifySchema();
   }
 
-  private verifyTablesExist() {
-    this.db.exec(Statements.schemaTables);
-    this.db.exec(Statements.schemaIndexes);
+  private verifySchema() {
+    const schemaState = this.db
+      .prepare<string[]>(Statements.schemaInfo)
+      .raw()
+      .all();
+
+    if (!schemaState.includes('node.id') || !schemaState.includes('edge.id')) {
+      this.db.exec(Statements.schemaTables);
+      this.db.exec(Statements.schemaIndexes);
+    }
+    if (this.config.softDelete && !schemaState.includes('node.deleted')) {
+      this.db.exec(Statements.schemaSoftDelete);
+    }
+    if (this.config.timestamps && !schemaState.includes('node.created')) {
+      this.db.exec(Statements.schemaTimeStamp);
+    }
   }
 
   getNode<N extends Node = Node>(id: string): N | undefined {

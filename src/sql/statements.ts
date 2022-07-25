@@ -46,7 +46,7 @@ export const Statements = {
     ALTER TABLE node ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0;
     ALTER TABLE edge ADD COLUMN deleted INTEGER NOT NULL DEFAULT 0;
   `,
-  schemaDateStamp: `
+  schemaTimeStamp: `
     ALTER TABLE node ADD COLUMN created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
     ALTER TABLE edge ADD COLUMN created TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
   `,
