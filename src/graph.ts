@@ -143,14 +143,14 @@ export class Graph {
     let stmt: Statement;
     if (entities instanceof Entity) {
       stmt = this.db.prepare(Entify(Statements.save, entities.getTable()));
-      affected += stmt.run(entities.serialize()).changes;
+      affected += stmt.run(JSON.stringify(entities)).changes;
     } else {
       ['node', 'edge'].forEach((table: string) => {
         entities
           .filter(e => e.getTable() === table)
           .forEach(e => {
             stmt = this.db.prepare(Entify(Statements.save, table));
-            affected += stmt.run(e.serialize()).changes;
+            affected += stmt.run(JSON.stringify(e)).changes;
           });
       });
     }

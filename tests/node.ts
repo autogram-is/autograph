@@ -14,10 +14,11 @@ test('Nodes constructed with arbitrary properties', () => {
   expect(Array.isArray(testNode.customProperty)).toBe(true);
 });
 
-test('Node serialization preserves id, properties', () => {
+test('Node serialization preserves id, structure', () => {
   const json = JSON.stringify(testNode);
   const testNode2 = JSON.parse(json);
+  const json2 = JSON.stringify(testNode2);
 
   expect(testNode.id).toBe(testNode2.id);
-  expect(testNode).toMatchObject(testNode2);
+  expect(json).toBe(json2);
 });

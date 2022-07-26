@@ -3,7 +3,6 @@ import {Entity} from './entity';
 export class Node extends Entity {
   readonly type: string = 'node';
   labels: string[] = [];
-  [propName: string]: unknown;
 
   getTable() {
     return 'node';
