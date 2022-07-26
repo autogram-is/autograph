@@ -6,14 +6,12 @@ import * as hash from 'object-hash';
 export const NSG_UUID_NAMESPACE = '9fc3e7e5-59d7-4d55-afa0-98a978f49bab';
 export abstract class Entity {
   id: string = NIL;
+  [propName: string]: unknown;
+
   abstract getTable(): string;
 
-  assignId() {
-    this.id = this.id === NIL ? Entity.generateId(this.uniqueValues) : this.id;
-  }
-
-  serialize(): string {
-    return JSON.stringify(this);
+  protected assignId() {
+    this.id = Entity.generateId(this.uniqueValues);
   }
 
   protected get uniqueValues(): unknown {

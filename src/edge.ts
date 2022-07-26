@@ -4,7 +4,6 @@ export class Edge extends Entity {
   readonly source: string;
   readonly predicate: string;
   readonly target: string;
-  [propName: string]: unknown;
 
   getTable() {
     return 'edge';
