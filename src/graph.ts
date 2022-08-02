@@ -212,7 +212,6 @@ export class Graph {
       where.equals('deleted', 0);
     }
     const sql = Entify(Statements.count, table) + where.sql;
-    console.log(sql);
     return this.db.prepare(sql).pluck().get(where.parameters);
   }
 }
