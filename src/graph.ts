@@ -191,6 +191,15 @@ export class Graph {
     return this.count(table, Where().equals('id', id), includeDeleted) > 0;
   }
 
+  nodeExists(
+    id: string,
+    includeDeleted = false
+  ): boolean {
+    const where = Where().equals('id', id);
+    return this.count('node', where, includeDeleted) > 0;
+  }
+
+
   edgeExists(
     source: string,
     target: string,
