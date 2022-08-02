@@ -86,7 +86,7 @@ export class Graph {
   }
 
   matchNode<N extends Node = Node>(
-    where: WhereBuilder,
+    where: WhereBuilder = Where(),
     includeDeleted = false,
     limit?: number
   ): N[] {
@@ -94,7 +94,7 @@ export class Graph {
   }
 
   matchEdge<E extends Edge = Edge>(
-    where: WhereBuilder,
+    where: WhereBuilder = Where(),
     includeDeleted = false,
     limit?: number
   ): E[] {
@@ -207,7 +207,11 @@ export class Graph {
     return this.count('edge', where, includeDeleted) > 0;
   }
 
-  count(table: string, where: WhereBuilder, includeDeleted = false): number {
+  count(
+    table: string,
+    where: WhereBuilder = Where(),
+    includeDeleted = false
+  ): number {
     if (this.config.supportsSoftDelete && !includeDeleted) {
       where.equals('deleted', 0);
     }
