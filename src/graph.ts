@@ -191,14 +191,10 @@ export class Graph {
     return this.count(table, Where().equals('id', id), includeDeleted) > 0;
   }
 
-  nodeExists(
-    id: string,
-    includeDeleted = false
-  ): boolean {
+  nodeExists(id: string, includeDeleted = false): boolean {
     const where = Where().equals('id', id);
     return this.count('node', where, includeDeleted) > 0;
   }
-
 
   edgeExists(
     source: string,
@@ -216,6 +212,7 @@ export class Graph {
       where.equals('deleted', 0);
     }
     const sql = Entify(Statements.count, table) + where.sql;
+    console.log(sql);
     return this.db.prepare(sql).pluck().get(where.parameters);
   }
 }

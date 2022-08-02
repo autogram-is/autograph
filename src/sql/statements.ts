@@ -3,7 +3,7 @@ export const Entify = (query: string, table: string): string => {
 };
 export const Statements = {
   select: 'SELECT data FROM $TABLE WHERE ',
-  count: 'SELECT COUNT(id) as ids FROM $TABLE ',
+  count: 'SELECT COUNT(1) FROM $TABLE WHERE ',
   save: `INSERT INTO $TABLE (data)
     VALUES(json(?))
     ON CONFLICT(id) DO UPDATE SET data=data;

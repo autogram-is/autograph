@@ -1,6 +1,4 @@
 import {Graph} from './graph';
-import {Entity} from './entity';
-import {WhereBuilder} from './sql';
 
 export abstract class View {
   constructor(protected graph: Graph) {
