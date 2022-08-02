@@ -9,6 +9,7 @@ export class WhereBuilder {
   andOr = 'AND';
   private clauses: string[] = [];
   get sql(): string {
+    if (this.clauses.length === 0) return '1 = 1';
     return ' ' + this.clauses.join(`\n ${this.andOr} `);
   }
 
