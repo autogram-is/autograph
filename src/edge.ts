@@ -1,4 +1,4 @@
-import { Entity, Uuid, JsonObject } from './entity';
+import { Entity, Uuid, EntityConstructorArgument } from './entity';
 
 export class Edge extends Entity {
   readonly source!: string;
@@ -9,7 +9,12 @@ export class Edge extends Entity {
     return 'edge';
   }
 
-  static New(source: Uuid, predicate: string, target: Uuid): Edge {
+  static New(
+    source: Uuid,
+    predicate: string,
+    target: Uuid,
+    ...args: unknown[]
+  ): Edge {
     return new this({
       source: source,
       predicate: predicate,
@@ -17,7 +22,7 @@ export class Edge extends Entity {
     });
   }
 
-  static Load(data: JsonObject | string): Edge {
+  static Load(data: EntityConstructorArgument): Edge {
     return new Edge(data);
   }
 

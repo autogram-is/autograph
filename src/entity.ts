@@ -7,6 +7,11 @@ export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
 
 export type Uuid = string & { readonly __uuid: true };
+export type EntityConstructorArgument =
+  | JsonObject
+  | string
+  | unknown[]
+  | undefined;
 
 export const NSG_UUID_NAMESPACE =
   '9fc3e7e5-59d7-4d55-afa0-98a978f49bab' as Uuid;
@@ -17,7 +22,7 @@ export abstract class Entity {
 
   abstract getTable(): string;
 
-  protected constructor(data?: JsonObject | string) {
+  protected constructor(data?: EntityConstructorArgument) {
     if (data !== undefined) {
       if (typeof data === 'string') data = JSON.parse(data);
       Object.assign(this, data);

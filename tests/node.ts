@@ -1,7 +1,25 @@
 import { validate as isValidUuid, NIL } from 'uuid';
-import { Node } from '../src';
+import { Node, JsonObject } from '../src';
 
 const testNode = Node.Load({ customProperty: [0, 1, 2, 3] });
+
+class TestNodeType extends Node {
+  readonly type: string = 'test_node';
+  requiredProperty!: string;
+  optionalProperty?: string;
+
+  static New(requiredProperty: string) {
+    return new this({ requiredProperty: requiredProperty });
+  }
+
+  static Load(data: JsonObject | string): TestNodeType {
+    return new this(data);
+  }
+
+  protected override get uniqueValues(): unknown {
+    return [this.requiredProperty];
+  }
+}
 
 test('Nodes receive an id', () => {
   const idNode = Node.New();
