@@ -1,6 +1,6 @@
 import {Edge} from '../src';
 
-test('Edge ID is properly unique', () => {
+test('Edge ID is unique and well-formed', () => {
   const edge1 = new Edge('id1', 'knows', 'id2');
   const edge2 = new Edge('id1', 'knows', 'id2');
   const edge3 = new Edge('id1', 'knows', 'id3');

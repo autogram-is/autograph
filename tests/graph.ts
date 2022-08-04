@@ -19,6 +19,7 @@ test('Nodes and edges persist', () => {
 
   const n1Loaded = g.getNode(n1.id) ?? {};
   expect(n1).toMatchObject(n1Loaded);
+  console.log(n1.getTable());
 });
 
 test('Node count works', () => {

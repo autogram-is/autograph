@@ -1,5 +1,4 @@
 import {Entity} from '../src';
-import {validate as isValidUuid} from 'uuid';
 
 export class TestEntity extends Entity {
   customProperty = '';
@@ -19,16 +18,16 @@ test('Uuids generated from any property', () => {
   const arrayUuid = Entity.generateId([1, 2]);
   const objectUuid = Entity.generateId({property: 'test', property2: 2});
 
-  expect(isValidUuid(randomUuid)).toBe(true);
-  expect(isValidUuid(randomUuid)).toBe(true);
+  expect(Entity.isValidId(randomUuid)).toBe(true);
+  expect(Entity.isValidId(randomUuid)).toBe(true);
   expect(stringUuid).not.toBe(stringUuid2);
   expect(stringUuid2).toBe(unknownStringUuid);
-  expect(isValidUuid(arrayUuid)).toBe(true);
-  expect(isValidUuid(objectUuid)).toBe(true);
+  expect(Entity.isValidId(arrayUuid)).toBe(true);
+  expect(Entity.isValidId(objectUuid)).toBe(true);
 });
 
 test('Unique properties extracted', () => {
   const obj = new TestEntity();
   obj.customProperty = 'foo';
-  expect(isValidUuid(obj.id)).toBe(true);
+  expect(Entity.isValidId(obj.id)).toBe(true);
 });
