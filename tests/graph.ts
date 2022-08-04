@@ -1,9 +1,9 @@
-import {Node, Edge, Graph} from '../src';
+import { Node, Edge, Graph } from '../src';
 
 let g: Graph;
 
 test('Graph initializes schema', () => {
-  g = new Graph({filename: ':memory:'});
+  g = new Graph({ filename: ':memory:' });
   expect(g.db.prepare('SELECT id from node').pluck().get()).toBe(undefined);
 });
 

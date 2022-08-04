@@ -1,4 +1,4 @@
-import {Edge} from '../src';
+import { Edge } from '../src';
 
 test('Edge ID is unique and well-formed', () => {
   const edge1 = new Edge('id1', 'knows', 'id2');

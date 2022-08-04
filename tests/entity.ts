@@ -1,4 +1,4 @@
-import {Entity} from '../src';
+import { Entity } from '../src';
 
 export class TestEntity extends Entity {
   customProperty = '';
@@ -16,7 +16,7 @@ test('Uuids generated from any property', () => {
   const stringUuid2 = Entity.generateId('test string 2');
   const unknownStringUuid = Entity.generateId('test string 2' as unknown);
   const arrayUuid = Entity.generateId([1, 2]);
-  const objectUuid = Entity.generateId({property: 'test', property2: 2});
+  const objectUuid = Entity.generateId({ property: 'test', property2: 2 });
 
   expect(Entity.isValidId(randomUuid)).toBe(true);
   expect(Entity.isValidId(randomUuid)).toBe(true);

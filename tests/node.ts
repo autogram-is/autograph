@@ -1,7 +1,7 @@
-import {validate as isValidUuid, NIL} from 'uuid';
-import {Node} from '../src';
+import { validate as isValidUuid, NIL } from 'uuid';
+import { Node } from '../src';
 
-const testNode = new Node({customProperty: [0, 1, 2, 3]});
+const testNode = new Node({ customProperty: [0, 1, 2, 3] });
 
 test('Nodes receive an id', () => {
   const idNode = new Node();

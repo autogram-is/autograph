@@ -1,4 +1,4 @@
-import {Entity, Uuid} from './entity';
+import { Entity, Uuid } from './entity';
 
 export class Edge extends Entity {
   readonly source!: string;

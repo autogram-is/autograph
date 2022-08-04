@@ -1,12 +1,12 @@
-import {v4 as uuidv4, v5 as uuidv5, NIL, validate} from 'uuid';
+import { v4 as uuidv4, v5 as uuidv5, NIL, validate } from 'uuid';
 import * as hash from 'object-hash';
 
-export type JsonObject = {[Key in string]?: JsonValue};
+export type JsonObject = { [Key in string]?: JsonValue };
 export type JsonArray = JsonValue[];
 export type JsonPrimitive = string | number | boolean | null;
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
 
-export type Uuid = string & {readonly __uuid: true};
+export type Uuid = string & { readonly __uuid: true };
 
 export const NSG_UUID_NAMESPACE =
   '9fc3e7e5-59d7-4d55-afa0-98a978f49bab' as Uuid;
@@ -34,7 +34,7 @@ export abstract class Entity {
   static generateId(hashValue?: unknown): Uuid {
     if (hashValue) {
       if (typeof hashValue !== 'object') {
-        hashValue = {data: hashValue};
+        hashValue = { data: hashValue };
       }
       const hashOutput: Buffer = hash(<object>hashValue, {
         encoding: 'buffer',

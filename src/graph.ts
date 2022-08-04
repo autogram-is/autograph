@@ -1,9 +1,9 @@
 import * as DatabaseConstructor from 'better-sqlite3';
-import {Database, SqliteError, Statement} from 'better-sqlite3';
-import {Where, WhereBuilder} from './sql';
-import {Entify, Statements} from './sql';
+import { Database, SqliteError, Statement } from 'better-sqlite3';
+import { Where, WhereBuilder } from './sql';
+import { Entify, Statements } from './sql';
 
-import {Entity, Node, Edge} from './';
+import { Entity, Node, Edge } from './';
 
 type GraphOptions = {
   filename: string;
