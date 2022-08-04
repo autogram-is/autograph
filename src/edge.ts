@@ -1,27 +1,24 @@
-import {Entity} from './entity';
+import {Entity, Uuid} from './entity';
 
 export class Edge extends Entity {
-  readonly source: string;
-  readonly predicate: string;
-  readonly target: string;
+  readonly source!: string;
+  readonly predicate!: string;
+  readonly target!: string;
 
   getTable() {
     return 'edge';
   }
 
-  constructor(
-    source: string,
-    predicate: string,
-    target: string,
-    data: Record<string, unknown> = {}
-  ) {
-    super();
-    this.source = source;
-    this.predicate = predicate;
-    this.target = target;
+  static Create(source: Uuid, predicate: string, target: Uuid): Edge {
+    return new Edge({
+      source: source,
+      predicate: predicate,
+      target: target,
+    });
+  }
 
-    for (const k in data) this[k] = data[k];
-    this.assignId();
+  static Load(json: string): Edge {
+    return new Edge(json);
   }
 
   protected get uniqueValues(): unknown {
