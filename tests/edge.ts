@@ -1,10 +1,16 @@
-import { Edge } from '../src';
+import { Node, Edge } from '../src';
 
 test('Edge ID is unique and well-formed', () => {
-  const edge1 = new Edge('id1', 'knows', 'id2');
-  const edge2 = new Edge('id1', 'knows', 'id2');
-  const edge3 = new Edge('id1', 'knows', 'id3');
+  const n1 = Node.New();
+  const n2 = Node.New();
+  const n3 = Node.New();
 
-  expect(edge1.id).toBe(edge2.id);
-  expect(edge1.id).not.toBe(edge3.id);
+  const edge = Edge.New(n1.id, 'knows', n2.id);
+  const edgeEquivalent = Edge.New(n1.id, 'knows', n2.id);
+  const edgeInverse = Edge.New(n2.id, 'knows', n1.id);
+  const edgeSimilar = Edge.New(n2.id, 'knows', n3.id);
+
+  expect(edge.id).toBe(edgeEquivalent.id);
+  expect(edge.id).not.toBe(edgeInverse.id);
+  expect(edge.id).not.toBe(edgeSimilar.id);
 });

@@ -1,10 +1,20 @@
-import { Entity } from '../src';
+import { Entity, JsonObject } from '../src';
 
 export class TestEntity extends Entity {
   customProperty = '';
+
+  static New() {
+    return new TestEntity();
+  }
+
+  static Load(data: JsonObject | string): TestEntity {
+    return new this(data);
+  }
+
   protected get uniqueValues(): string {
     return this.customProperty;
   }
+
   getTable() {
     return 'none';
   }
@@ -27,7 +37,7 @@ test('Uuids generated from any property', () => {
 });
 
 test('Unique properties extracted', () => {
-  const obj = new TestEntity();
+  const obj = TestEntity.New();
   obj.customProperty = 'foo';
   expect(Entity.isValidId(obj.id)).toBe(true);
 });

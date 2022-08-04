@@ -3,7 +3,7 @@ import { Database, SqliteError, Statement } from 'better-sqlite3';
 import { Where, WhereBuilder } from './sql';
 import { Entify, Statements } from './sql';
 
-import { Entity, Node, Edge } from './';
+import { Entity, Node, Edge, Uuid } from './';
 
 type GraphOptions = {
   filename: string;
@@ -63,20 +63,20 @@ export class Graph {
   }
 
   getNode<N extends Node = Node>(
-    id: string,
+    id: Uuid,
     includeDeleted = false
   ): N | undefined {
     return this.get<N>('node', id, includeDeleted);
   }
   getEdge<E extends Edge = Edge>(
-    id: string,
+    id: Uuid,
     includeDeleted = false
   ): E | undefined {
     return this.get<E>('edge', id, includeDeleted);
   }
   private get<T extends Entity = Entity>(
     table: string,
-    id: string,
+    id: Uuid,
     includeDeleted = false
   ): T | undefined {
     return (
@@ -125,17 +125,6 @@ export class Graph {
       }
       throw e;
     }
-  }
-
-  connect(
-    source: Node,
-    predicate: string,
-    target: Node,
-    data: Record<string, unknown>
-  ): Edge {
-    const edge = new Edge(source.id, predicate, target.id, data);
-    this.save(edge);
-    return edge;
   }
 
   save(entities: Entity | Entity[]): number {
@@ -187,11 +176,11 @@ export class Graph {
     return affected;
   }
 
-  exists(table: string, id: string, includeDeleted = false): boolean {
+  exists(table: string, id: Uuid, includeDeleted = false): boolean {
     return this.count(table, Where().equals('id', id), includeDeleted) > 0;
   }
 
-  nodeExists(id: string, includeDeleted = false): boolean {
+  nodeExists(id: Uuid, includeDeleted = false): boolean {
     const where = Where().equals('id', id);
     return this.count('node', where, includeDeleted) > 0;
   }

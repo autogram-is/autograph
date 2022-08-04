@@ -1,6 +1,6 @@
 {
   "name": "@autogram/node-simple-graph",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Quick and dirty graph data storage in SQLite.",
   "main": "build/src/index.js",
   "scripts": {
