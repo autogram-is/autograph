@@ -22,3 +22,15 @@ test('Node serialization preserves id, structure', () => {
   expect(testNode.id).toBe(testNode2.id);
   expect(json).toBe(json2);
 });
+
+
+test('Deserialization preserves object identity', () => {
+  const n = new Node();
+  expect(n.getTable).toBeDefined();
+
+  const json = JSON.stringify(n);
+  const fromJson = JSON.parse(json) as Node;
+  expect(fromJson.getTable).toBeUndefined();
+
+  Object.assign(new Node, fromJson);
+});
