@@ -138,22 +138,12 @@ export class Graph {
     let edgeCascadeSql = '';
     let affected = 0;
 
-    if (this.config.useSoftDeletes && this.config.supportsSoftDelete) {
-      sql = Entify(Statements.softDeleteEntity, e.getTable()) + 'id=?';
-    } else {
-      sql = Entify(Statements.deleteEntity, e.getTable()) + 'id=?';
-    }
+    sql = Entify(Statements.deleteEntity, e.getTable()) + 'id=?';
 
     // First handle inbound, outbound edges
     if (e.getTable() === 'node') {
-      if (this.config.useSoftDeletes && this.config.supportsSoftDelete) {
-        edgeCascadeSql =
-          Entify('Statements.softDeleteEntity', 'edge') +
-          'target=?id OR edge=?id';
-      } else {
-        edgeCascadeSql =
-          Entify('Statements.deleteEntity', 'edge') + 'target=?id OR edge=?id';
-      }
+      edgeCascadeSql =
+        Entify(Statements.deleteEntity, 'edge') + 'target=?id OR source=?id';
       affected = this.db.prepare(edgeCascadeSql).run(e.id).changes;
     }
     affected = this.db.prepare(sql).run(e.id).changes;
