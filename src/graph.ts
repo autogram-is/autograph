@@ -143,10 +143,11 @@ export class Graph {
     // First handle inbound, outbound edges
     if (e.getTable() === 'node') {
       edgeCascadeSql =
-        Entify(Statements.deleteEntity, 'edge') + 'target=?id OR source=?id';
-      affected = this.db.prepare(edgeCascadeSql).run(e.id).changes;
+        Entify(Statements.deleteEntity, 'edge') + 'target=? OR source=?';
+      console.log(edgeCascadeSql);
+      affected += this.db.prepare(edgeCascadeSql).run(e.id, e.id).changes;
     }
-    affected = this.db.prepare(sql).run(e.id).changes;
+    affected += this.db.prepare(sql).run(e.id).changes;
     return affected;
   }
 
@@ -158,7 +159,7 @@ export class Graph {
     return this.exists('node', id);
   }
 
-  edgeExists(source: string, target: string, predicate?: string): boolean {
+  edgeExists(source: Uuid, target: Uuid, predicate?: string): boolean {
     const where = Where().equals('source', source).equals('target', target);
     if (predicate) where.equals('predicate', predicate);
     return this.count('edge', where) > 0;
