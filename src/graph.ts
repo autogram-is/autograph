@@ -144,7 +144,6 @@ export class Graph {
     if (e.getTable() === 'node') {
       edgeCascadeSql =
         Entify(Statements.deleteEntity, 'edge') + 'target=? OR source=?';
-      console.log(edgeCascadeSql);
       affected += this.db.prepare(edgeCascadeSql).run(e.id, e.id).changes;
     }
     affected += this.db.prepare(sql).run(e.id).changes;
