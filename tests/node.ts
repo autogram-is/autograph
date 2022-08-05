@@ -1,19 +1,15 @@
 import { validate as isValidUuid, NIL } from 'uuid';
-import { Node, JsonObject } from '../src';
+import { Node } from '../src';
 
-const testNode = Node.Load({ customProperty: [0, 1, 2, 3] });
+const testNode = Node.load({ customProperty: [0, 1, 2, 3] });
 
-class TestNodeType extends Node {
-  readonly type: string = 'test_node';
+class NodeSubclass extends Node {
+  readonly type: string = 'node_subclass';
   requiredProperty!: string;
   optionalProperty?: string;
 
-  static New(requiredProperty: string) {
+  static new(requiredProperty: string): NodeSubclass {
     return new this({ requiredProperty: requiredProperty });
-  }
-
-  static Load(data: JsonObject | string): TestNodeType {
-    return new this(data);
   }
 
   protected override get uniqueValues(): unknown {
@@ -22,7 +18,7 @@ class TestNodeType extends Node {
 }
 
 test('Nodes receive an id', () => {
-  const idNode = Node.New();
+  const idNode = Node.new();
   expect(idNode.id).not.toBe(NIL);
   expect(isValidUuid(idNode.id)).toBe(true);
 });
@@ -34,7 +30,7 @@ test('Nodes constructed with arbitrary properties', () => {
 
 test('Node serialization preserves id, structure', () => {
   const json = JSON.stringify(testNode);
-  const testNode2 = Node.Load(json);
+  const testNode2 = Node.load(json);
   const json2 = JSON.stringify(testNode2);
 
   expect(testNode.id).toBe(testNode2.id);
@@ -42,10 +38,15 @@ test('Node serialization preserves id, structure', () => {
 });
 
 test('Deserialization preserves object identity', () => {
-  const n = Node.New();
+  const n = Node.new();
   expect(n.getTable).toBeDefined();
 
   const json = JSON.stringify(n);
-  const fromJson = Node.Load(json);
+  const fromJson = Node.load(json);
   expect(fromJson.getTable).toBeDefined();
+});
+
+test('Node subclass works', () => {
+  const n = NodeSubclass.new('Test message');
+  expect(n.requiredProperty).toBeDefined();
 });

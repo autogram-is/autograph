@@ -3,7 +3,7 @@ import { Database, SqliteError, Statement } from 'better-sqlite3';
 import { Where, WhereBuilder } from './sql';
 import { Entify, Statements } from './sql';
 
-import { Entity, Node, Edge, Uuid } from './';
+import { Entity, Uuid, JsonObject } from './';
 
 type GraphOptions = {
   filename: string;
@@ -62,54 +62,40 @@ export class Graph {
     }
   }
 
-  getNode<N extends Node = Node>(
-    id: Uuid,
-    includeDeleted = false
-  ): N | undefined {
-    return this.get<N>('node', id, includeDeleted);
-  }
-  getEdge<E extends Edge = Edge>(
-    id: Uuid,
-    includeDeleted = false
-  ): E | undefined {
-    return this.get<E>('edge', id, includeDeleted);
-  }
-  private get<T extends Entity = Entity>(
-    table: string,
-    id: Uuid,
-    includeDeleted = false
-  ): T | undefined {
-    return (
-      this.match<T>(table, Where().equals('id', id), includeDeleted)[0] ??
-      undefined
-    );
+  getNodeById(id: Uuid): JsonObject | undefined {
+    return this.get('node', id);
   }
 
-  matchNode<N extends Node = Node>(
+  getEdgeById(id: Uuid): JsonObject | undefined {
+    return this.get('edge', id);
+  }
+
+  private get(table: string, id: Uuid): JsonObject | undefined {
+    return this.match(table, Where().equals('id', id))[0] ?? undefined;
+  }
+
+  matchNode(
     where: WhereBuilder = Where(),
-    includeDeleted = false,
+
     limit?: number
-  ): N[] {
-    return this.match<N>('node', where, includeDeleted, limit);
+  ): JsonObject[] {
+    return this.match('node', where, limit);
   }
 
-  matchEdge<E extends Edge = Edge>(
+  matchEdge(
     where: WhereBuilder = Where(),
-    includeDeleted = false,
+
     limit?: number
-  ): E[] {
-    return this.match<E>('edge', where, includeDeleted, limit);
+  ): JsonObject[] {
+    return this.match('edge', where, limit);
   }
 
-  private match<T extends Entity = Entity>(
+  private match(
     table: string,
     where: WhereBuilder,
-    includeDeleted = false,
+
     limit?: number
-  ): T[] {
-    if (this.config.supportsSoftDelete && !includeDeleted) {
-      where.equals('deleted', 0);
-    }
+  ): JsonObject[] {
     let sql = '';
     try {
       sql = Entify(Statements.select, 'edge') + where.sql;
@@ -117,10 +103,10 @@ export class Graph {
       return this.db
         .prepare(sql)
         .all(where.parameters)
-        .map(r => JSON.parse(r.data) as T);
+        .map(r => JSON.parse(r.data));
     } catch (e: unknown) {
       if (e instanceof SqliteError) {
-        console.log(sql);
+        console.error(sql);
         throw e;
       }
       throw e;
@@ -168,42 +154,27 @@ export class Graph {
         edgeCascadeSql =
           Entify('Statements.deleteEntity', 'edge') + 'target=?id OR edge=?id';
       }
-
       affected = this.db.prepare(edgeCascadeSql).run(e.id).changes;
     }
-
     affected = this.db.prepare(sql).run(e.id).changes;
     return affected;
   }
 
-  exists(table: string, id: Uuid, includeDeleted = false): boolean {
-    return this.count(table, Where().equals('id', id), includeDeleted) > 0;
+  exists(table: string, id: Uuid): boolean {
+    return this.count(table, Where().equals('id', id)) > 0;
   }
 
-  nodeExists(id: Uuid, includeDeleted = false): boolean {
-    const where = Where().equals('id', id);
-    return this.count('node', where, includeDeleted) > 0;
+  nodeExists(id: Uuid): boolean {
+    return this.exists('node', id);
   }
 
-  edgeExists(
-    source: string,
-    target: string,
-    predicate?: string,
-    includeDeleted = false
-  ): boolean {
+  edgeExists(source: string, target: string, predicate?: string): boolean {
     const where = Where().equals('source', source).equals('target', target);
     if (predicate) where.equals('predicate', predicate);
-    return this.count('edge', where, includeDeleted) > 0;
+    return this.count('edge', where) > 0;
   }
 
-  count(
-    table: string,
-    where: WhereBuilder = Where(),
-    includeDeleted = false
-  ): number {
-    if (this.config.supportsSoftDelete && !includeDeleted) {
-      where.equals('deleted', 0);
-    }
+  count(table: string, where: WhereBuilder = Where()): number {
     const sql = Entify(Statements.count, table) + where.sql;
     return this.db.prepare(sql).pluck().get(where.parameters);
   }

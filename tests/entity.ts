@@ -1,14 +1,10 @@
-import { Entity, JsonObject } from '../src';
+import { Entity } from '../src';
 
 export class TestEntity extends Entity {
   customProperty = '';
 
   static New() {
     return new TestEntity();
-  }
-
-  static Load(data: JsonObject | string): TestEntity {
-    return new this(data);
   }
 
   protected get uniqueValues(): string {

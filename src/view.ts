@@ -2,7 +2,7 @@ import { Graph } from './graph';
 import { Where, WhereBuilder } from './sql';
 
 export abstract class View {
-  constructor(protected graph: Graph) {
+  constructor(protected readonly graph: Graph) {
     this.ensureView();
   }
 

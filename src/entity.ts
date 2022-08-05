@@ -1,34 +1,22 @@
-import { v4 as uuidv4, v5 as uuidv5, NIL, validate } from 'uuid';
+import { v4 as uuidv4, v5 as uuidv5, NIL as NilUuid, validate } from 'uuid';
 import * as hash from 'object-hash';
 
+type JsonArray = JsonValue[];
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+
 export type JsonObject = { [Key in string]?: JsonValue };
-export type JsonArray = JsonValue[];
-export type JsonPrimitive = string | number | boolean | null;
-export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+export type Uuid = string;
 
-export type Uuid = string & { readonly __uuid: true };
-export type EntityConstructorArgument =
-  | JsonObject
-  | string
-  | unknown[]
-  | undefined;
+export const NIL: Uuid = NilUuid;
 
-export const NSG_UUID_NAMESPACE =
-  '9fc3e7e5-59d7-4d55-afa0-98a978f49bab' as Uuid;
+const NSG_UUID_NAMESPACE: Uuid = '9fc3e7e5-59d7-4d55-afa0-98a978f49bab';
 
 export abstract class Entity {
-  id = NIL as Uuid;
+  id = NIL;
   [propName: string]: unknown;
 
   abstract getTable(): string;
-
-  protected constructor(data?: EntityConstructorArgument) {
-    if (data !== undefined) {
-      if (typeof data === 'string') data = JSON.parse(data);
-      Object.assign(this, data);
-    }
-    this.assignId();
-  }
 
   protected assignId() {
     if (this.id === NIL) {
