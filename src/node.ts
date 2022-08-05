@@ -2,14 +2,15 @@ import { Entity, JsonObject } from './entity';
 
 export class Node extends Entity {
   readonly type: string = 'node';
-
   labels: string[] = [];
 
   constructor(data?: JsonObject | string) {
     super();
     if (data !== undefined) {
       if (typeof data === 'string') data = JSON.parse(data);
+      console.log(this);
       Object.assign(this, data);
+      console.log(this);
     }
     this.assignId();
   }
@@ -20,7 +21,7 @@ export class Node extends Entity {
 
   static load<T extends typeof Node = typeof this>(
     this: T,
-    data: JsonObject | string
+    data: object | string
   ): InstanceType<T> {
     return new this(data) as InstanceType<T>;
   }

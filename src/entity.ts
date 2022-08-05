@@ -3,9 +3,9 @@ import * as hash from 'object-hash';
 
 type JsonArray = JsonValue[];
 type JsonPrimitive = string | number | boolean | null;
-type JsonValue = JsonPrimitive | JsonObject | JsonArray;
-
+type JsonValue = JsonPrimitive | JsonObject | JsonArray | unknown;
 export type JsonObject = { [Key in string]?: JsonValue };
+
 export type Uuid = string;
 
 export const NIL: Uuid = NilUuid;

@@ -7,12 +7,12 @@ class NodeSubclass extends Node {
   readonly type: string = 'node_subclass';
   requiredProperty!: string;
   optionalProperty?: string;
-  defaultProperty:string = 'Test';
+  defaultProperty!: string;
 
   static new(
     requiredProperty: string,
     optionalProperty?: string,
-    defaultProperty?: string
+    defaultProperty = 'Default'
   ): NodeSubclass {
     return new this({
       requiredProperty: requiredProperty,
@@ -61,11 +61,8 @@ test('Node subclass works', () => {
 });
 
 test('Default valued properties can be overwritten', () => {
-  const n = NodeSubclass.new(
-    'prop 1',
-    'prop 2',
-    'prop 3'
-  )
+  const n = NodeSubclass.new('prop 1', 'prop 2', 'prop 3');
+
   expect(n.requiredProperty).toEqual('prop 1');
   expect(n.optionalProperty).toEqual('prop 2');
   expect(n.defaultProperty).toEqual('prop 3');
