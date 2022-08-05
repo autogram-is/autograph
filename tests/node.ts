@@ -7,9 +7,18 @@ class NodeSubclass extends Node {
   readonly type: string = 'node_subclass';
   requiredProperty!: string;
   optionalProperty?: string;
+  defaultProperty:string = 'Test';
 
-  static new(requiredProperty: string): NodeSubclass {
-    return new this({ requiredProperty: requiredProperty });
+  static new(
+    requiredProperty: string,
+    optionalProperty?: string,
+    defaultProperty?: string
+  ): NodeSubclass {
+    return new this({
+      requiredProperty: requiredProperty,
+      optionalProperty: optionalProperty,
+      defaultProperty: defaultProperty,
+    });
   }
 
   protected override get uniqueValues(): unknown {
@@ -49,4 +58,15 @@ test('Deserialization preserves object identity', () => {
 test('Node subclass works', () => {
   const n = NodeSubclass.new('Test message');
   expect(n.requiredProperty).toBeDefined();
+});
+
+test('Default valued properties can be overwritten', () => {
+  const n = NodeSubclass.new(
+    'prop 1',
+    'prop 2',
+    'prop 3'
+  )
+  expect(n.requiredProperty).toEqual('prop 1');
+  expect(n.optionalProperty).toEqual('prop 2');
+  expect(n.defaultProperty).toEqual('prop 3');
 });
