@@ -20,7 +20,7 @@ export class Graph {
   constructor(options: Partial<GraphOptions>) {
     this.config = {
       ...{
-        filename: ':memory',
+        filename: ':memory:',
         useSoftDeletes: false,
         supportsSoftDelete: false,
         saveTimestamp: false,
