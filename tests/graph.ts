@@ -1,4 +1,4 @@
-import { Node, Edge, Graph } from '../src';
+import { Node, Edge, Graph, Where } from '../src';
 
 let g: Graph;
 
@@ -43,4 +43,16 @@ test('Deletes work', () => {
   expect(g.nodeExists(n1.id)).toEqual(false);
   expect(g.nodeExists(n2.id)).toEqual(true);
   expect(g.edgeExists(n1.id, n2.id)).toEqual(false);
+});
+
+test('Filtering by label works', () => {
+  const n = Node.new();
+  n.labels.push('test label');
+  g.save(n);
+
+  const sql = Where().contains('$.labels', 'test label');
+  console.log(sql);
+
+  const results = g.matchNode(sql);
+  expect(results.length).toEqual(1);
 });

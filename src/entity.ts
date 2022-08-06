@@ -49,7 +49,7 @@ export abstract class Entity {
     return validate(id);
   }
 
-  toJSON(key?: string | number): JsonObject {
+  toJSON(): JsonObject {
     const data: JsonObject = { ...this };
     return data;
   }

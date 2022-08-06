@@ -98,7 +98,7 @@ export class Graph {
   ): JsonObject[] {
     let sql = '';
     try {
-      sql = Entify(Statements.select, 'edge') + where.sql;
+      sql = Entify(Statements.select, table) + where.sql;
       if (limit) sql += ` LIMIT ${limit}`;
       return this.db
         .prepare(sql)
