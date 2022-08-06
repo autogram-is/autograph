@@ -1,6 +1,9 @@
+import { SnakeCase } from 'type-fest';
 import { v4 as uuidv4, v5 as uuidv5, NIL as NilUuid, validate } from 'uuid';
 import * as hash from 'object-hash';
 
+// A slightly modified version of the JsonObject set from type-fest.
+// It allows unknowns, even though that's probably not a great idea.
 type JsonArray = JsonValue[];
 type JsonPrimitive = string | number | boolean | null;
 type JsonValue = JsonPrimitive | JsonObject | JsonArray | unknown;
@@ -16,7 +19,7 @@ export abstract class Entity {
   id = NIL;
   [propName: string]: unknown;
 
-  abstract getTable(): string;
+  abstract getTable(): SnakeCase<string>;
 
   protected assignId() {
     if (this.id === NIL) {
@@ -44,5 +47,10 @@ export abstract class Entity {
 
   static isValidId(id: string): boolean {
     return validate(id);
+  }
+
+  toJSON(key?: string | number): JsonObject {
+    const data: JsonObject = { ...this };
+    return data;
   }
 }

@@ -2,7 +2,7 @@ import { Entity, JsonObject } from './entity';
 
 export class Node extends Entity {
   readonly type: string = 'node';
-  labels: string[] = [];
+  labels!: string[];
 
   constructor(data?: JsonObject | string) {
     super();
@@ -10,6 +10,7 @@ export class Node extends Entity {
       if (typeof data === 'string') data = JSON.parse(data);
       Object.assign(this, data);
     }
+    if (this.labels === undefined) this.labels = [];
     this.assignId();
   }
 

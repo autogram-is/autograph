@@ -67,3 +67,15 @@ test('Default valued properties can be overwritten', () => {
   expect(n.optionalProperty).toEqual('prop 2');
   expect(n.defaultProperty).toEqual('prop 3');
 });
+
+test('Label data roundtripped', () => {
+  const n = Node.new();
+  n.labels.push('test');
+  n.labels.push('second test');
+
+  const j = JSON.stringify(n);
+
+  const n1 = Node.load(j);
+  expect(n1.labels.includes('second test')).toBeTruthy();
+  expect(n1.labels.length).toEqual(2);
+});
