@@ -4,9 +4,9 @@ import * as hash from 'object-hash';
 
 // A slightly modified version of the JsonObject set from type-fest.
 // It allows unknowns, even though that's probably not a great idea.
-type JsonArray = JsonValue[];
-type JsonPrimitive = string | number | boolean | null;
-type JsonValue = JsonPrimitive | JsonObject | JsonArray | unknown;
+export type JsonArray = JsonValue[];
+export type JsonPrimitive = string | number | boolean | null;
+export type JsonValue = JsonPrimitive | JsonObject | JsonArray | unknown;
 export type JsonObject = { [Key in string]?: JsonValue };
 
 export type Uuid = string;
