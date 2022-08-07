@@ -14,6 +14,7 @@ type GraphOptions = {
   databaseConfig: Partial<DatabaseConstructor.Options>;
 };
 export class Graph {
+  debug = false;
   readonly db: Database;
   readonly config: GraphOptions;
 
@@ -34,6 +35,10 @@ export class Graph {
       this.config.databaseConfig
     );
     this.verifySchema();
+  }
+
+  private log(msg: string): void {
+    if (this.debug) console.log(msg);
   }
 
   private verifySchema() {
@@ -100,6 +105,7 @@ export class Graph {
     try {
       sql = Entify(Statements.select, table) + where.sql;
       if (limit) sql += ` LIMIT ${limit}`;
+      this.log(`Matching: ${sql}`);
       return this.db
         .prepare(sql)
         .all(where.parameters)
@@ -118,6 +124,9 @@ export class Graph {
     let stmt: Statement;
     if (entities instanceof Entity) {
       stmt = this.db.prepare(Entify(Statements.save, entities.getTable()));
+      this.log(
+        `Saving ${entities.getTable()} ${entities.id} with ${stmt.source}`
+      );
       affected += stmt.run(JSON.stringify(entities)).changes;
     } else {
       ['node', 'edge'].forEach((table: string) => {
@@ -125,6 +134,7 @@ export class Graph {
           .filter(e => e.getTable() === table)
           .forEach(e => {
             stmt = this.db.prepare(Entify(Statements.save, table));
+            this.log(`Saving ${e.getTable()} ${e.id} with ${stmt.source}`);
             affected += stmt.run(JSON.stringify(e)).changes;
           });
       });

@@ -1,4 +1,4 @@
-import { Node, Edge, Graph, Where } from '../src';
+import { Node, Edge, Graph, Where, JsonObject } from '../src';
 
 let g: Graph;
 
@@ -67,4 +67,12 @@ test('Arbitrary properties persist', () => {
     n2 = Node.load(x);
   }
   expect(n.test).toEqual(n2.test);
+});
+
+test('Stacked changes', () => {
+  const n = Node.new();
+  g.save(n);
+  n.random = 'test';
+  g.save(n);
+  expect(g.matchNode(Where().equals('$.random', 'test')).length).toEqual(1);
 });
