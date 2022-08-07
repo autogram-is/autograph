@@ -1,4 +1,11 @@
-export { Entity, JsonObject, Uuid } from './entity';
+export {
+  Entity,
+  Uuid,
+  JsonObject,
+  JsonValue,
+  JsonArray,
+  JsonPrimitive,
+} from './entity';
 export { Node } from './node';
 export { Edge } from './edge';
 export { Graph } from './graph';

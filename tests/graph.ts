@@ -1,4 +1,4 @@
-import { Node, Edge, Graph, Where, JsonObject } from '../src';
+import { Node, Edge, Graph, Where } from '../src';
 
 let g: Graph;
 
