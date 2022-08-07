@@ -7,14 +7,8 @@ export abstract class View {
   }
 
   abstract readonly viewName: string;
-  abstract viewDefinitionSql(): string;
+  protected abstract ensureView(): void
 
-  protected ensureView() {
-    const sql = `
-      CREATE VIEW IF NOT EXISTS ${this.viewName} AS ${this.viewDefinitionSql()}
-    `;
-    this.graph.db.exec(sql);
-  }
   count(where: WhereBuilder = Where()): number {
     const stmt = this.graph.db.prepare(
       `SELECT COUNT(1) FROM ${this.viewName}
