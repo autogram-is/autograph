@@ -7,6 +7,7 @@ test('simple where clause works', () => {
 
 test('JSON array contains', () => {
   const sql = Where().contains('$.labels', 'test');
-  const expected = ` (SELECT COUNT(1) FROM json_each(data, '$.labels') WHERE json_each.value = test) > 0`;
+  const expected =
+    " (SELECT COUNT(1) FROM json_each(data, '$.labels') WHERE json_each.value = test) > 0";
   expect(sql.toString()).toEqual(expected);
 });

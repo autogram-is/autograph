@@ -7,7 +7,7 @@ export abstract class View {
   }
 
   abstract readonly viewName: string;
-  protected abstract ensureView(): void
+  protected abstract ensureView(): void;
 
   count(where: WhereBuilder = Where()): number {
     const stmt = this.graph.db.prepare(

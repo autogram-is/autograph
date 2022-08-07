@@ -51,8 +51,20 @@ test('Filtering by label works', () => {
   g.save(n);
 
   const sql = Where().contains('$.labels', 'test label');
-  console.log(sql);
 
   const results = g.matchNode(sql);
   expect(results.length).toEqual(1);
+});
+
+test('Arbitrary properties persist', () => {
+  const n = Node.new();
+  n.test = 'Test property';
+  g.save(n);
+
+  let n2: Node = Node.new();
+  const x = g.getNodeById(n.id);
+  if (x) {
+    n2 = Node.load(x);
+  }
+  expect(n.test).toEqual(n2.test);
 });
