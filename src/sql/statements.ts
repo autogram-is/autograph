@@ -6,7 +6,7 @@ export const Statements = {
   count: 'SELECT COUNT(1) FROM $TABLE WHERE ',
   save: `INSERT INTO $TABLE (data)
     VALUES(json(?))
-    ON CONFLICT(id) DO UPDATE SET data=data;
+    ON CONFLICT(id) DO UPDATE SET data=excluded.data;
   `,
   deleteEntity: 'DELETE FROM $TABLE WHERE ',
   softDeleteEntity: 'UPDATE $TABLE SET (deleted = 1) WHERE ',

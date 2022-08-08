@@ -1,11 +1,16 @@
-import {Entity} from '../src';
-import {validate as isValidUuid} from 'uuid';
+import { Entity } from '../src';
 
 export class TestEntity extends Entity {
   customProperty = '';
+
+  static New() {
+    return new TestEntity();
+  }
+
   protected get uniqueValues(): string {
     return this.customProperty;
   }
+
   getTable() {
     return 'none';
   }
@@ -17,18 +22,18 @@ test('Uuids generated from any property', () => {
   const stringUuid2 = Entity.generateId('test string 2');
   const unknownStringUuid = Entity.generateId('test string 2' as unknown);
   const arrayUuid = Entity.generateId([1, 2]);
-  const objectUuid = Entity.generateId({property: 'test', property2: 2});
+  const objectUuid = Entity.generateId({ property: 'test', property2: 2 });
 
-  expect(isValidUuid(randomUuid)).toBe(true);
-  expect(isValidUuid(randomUuid)).toBe(true);
+  expect(Entity.isValidId(randomUuid)).toBe(true);
+  expect(Entity.isValidId(randomUuid)).toBe(true);
   expect(stringUuid).not.toBe(stringUuid2);
   expect(stringUuid2).toBe(unknownStringUuid);
-  expect(isValidUuid(arrayUuid)).toBe(true);
-  expect(isValidUuid(objectUuid)).toBe(true);
+  expect(Entity.isValidId(arrayUuid)).toBe(true);
+  expect(Entity.isValidId(objectUuid)).toBe(true);
 });
 
 test('Unique properties extracted', () => {
-  const obj = new TestEntity();
+  const obj = TestEntity.New();
   obj.customProperty = 'foo';
-  expect(isValidUuid(obj.id)).toBe(true);
+  expect(Entity.isValidId(obj.id)).toBe(true);
 });

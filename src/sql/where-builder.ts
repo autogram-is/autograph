@@ -81,6 +81,20 @@ export class WhereBuilder {
     );
   }
 
+  contains(property: string, value: SqlValue): WhereBuilder {
+    return this.addRaw(
+      `(SELECT COUNT(1) FROM json_each(data, '${property}') WHERE json_each.value = ${this.placeholder}) > 0`,
+      value
+    );
+  }
+
+  notContains(property: string, value: SqlValue): WhereBuilder {
+    return this.addRaw(
+      `(SELECT COUNT(1) FROM json_each(data, '${property}') WHERE json_each.value = ${this.placeholder}) = 0`,
+      value
+    );
+  }
+
   isNull(property: string): WhereBuilder {
     return this.addRaw(`${this.columnize(property)} IS NULL`);
   }
