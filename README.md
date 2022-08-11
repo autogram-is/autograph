@@ -11,10 +11,4 @@ Inspired by David Leadbeater's [SQLite as a document database](https://dgl.cx/20
 - A `Graph` class that centralizes CRUD and graph traversal, with optional raw access to the underlying Sqlite db
 - `View` classes that wrap Sqlite view definitions and expose strongly-typed subsets of the graph
 
-## TODO:
-- [ ] Generalized traversal functions for edges
-- [ ] Improved load/create mechanics
-- [ ] Use Graph instantiation to centralize loading/initializing Entity types and Views
-- [ ] Expose Entity and View specific factories and helper functions via the Graph instance
-
 It's very much a work in progress, but it's already useful for small to medium-sized data sets. In addition, while this project is designed to store _graphlike_ data, SQLite lacks support for actual an graph query language and other common conveniences in genuine graph databases. Think of this as a building block for _graph-like pools of documents_, not a replacement for Neo4j.
