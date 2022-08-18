@@ -1,50 +1,70 @@
 {
-  "name": "@autogram/node-simple-graph",
-  "version": "0.3.0",
-  "description": "Quick and dirty graph data storage in SQLite.",
-  "main": "build/src/index.js",
+  "name": "autograph",
+  "version": "0.4.0",
+  "description": "Strongly typed graphlike storage for arbitrary data.",
+  "exports": "./dist/source/index.js",
+  "types": "./dist/source/index.d.ts",
+  "type": "module",
+  "engines": {
+    "node": ">=14.0.0"
+  },
   "scripts": {
-    "test": "jest --config jestconfig.json",
-    "lint": "gts lint",
-    "clean": "gts clean",
+    "clean": "shx rm -rf ./dist; ava reset-cache",
+    "nuke": "npm run clean; rm -rf ./node_modules; rm package-lock.json; npm install",
+    "test": "ava",
+    "lint": "xo",
+    "fix": "xo --fix",
     "compile": "tsc",
-    "fix": "gts fix",
-    "prepare": "npm run compile",
-    "pretest": "npm run compile",
+    "prepare": "run-s clean compile",
+    "pretest": "run-s clean compile",
     "posttest": "npm run lint"
   },
   "files": [
-    "build/**/*"
+    "dist/src/**/*"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/autogram-is/node-simple-graph.git"
+  "xo": {
+    "space": true,
+    "prettier": true,
+    "bracketSpacing": true
   },
-  "keywords": [
-    "graph",
-    "sqlite"
-  ],
-  "author": "Jeff Eaton <jeff@autogram.is> (http://eaton.fyi/)",
+  "prettier": {
+    "editorconfig": true,
+    "semi": true,
+    "singleQuote": true,
+    "indent_style": "space",
+    "indent_size": 2,
+    "bracketSpacing": true
+  },
+  "ava": {
+    "files": [
+      "tests/*"
+    ],
+    "typescript": {
+      "rewritePaths": {
+        "tests/": "dist/tests/"
+      },
+      "compile": false
+    }
+  },
+  "author": "Jeff Eaton <jeff@autogram.is> (http://eaton.fyi)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/autogram-is/node-simple-graph/issues"
-  },
-  "homepage": "https://github.com/autogram-is/node-simple-graph#readme",
   "devDependencies": {
-    "@types/jest": "^28.1.4",
+    "@ava/typescript": "^3.0.1",
     "@types/node": "^14.11.2",
     "@types/object-hash": "^2.2.1",
     "@types/uuid": "^8.3.4",
-    "gts": "^4.0.0",
-    "jest": "^28.1.2",
-    "ts-jest": "^28.0.5",
-    "typescript": "^4.7"
+    "ava": "^4.3.1",
+    "concurrently": "^7.3.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "shx": "^0.3.4",
+    "typescript": "^4.7.4",
+    "xo": "^0.51.0"
   },
   "dependencies": {
-    "@types/better-sqlite3": "^7.5.0",
-    "better-sqlite3": "^7.6.2",
+    "class-transformer": "^0.5.1",
     "object-hash": "^3.0.0",
-    "type-fest": "^2.18.0",
+    "reflect-metadata": "^0.1.13",
     "uuid": "^8.3.2"
   }
 }

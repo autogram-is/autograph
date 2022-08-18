@@ -1,81 +1,82 @@
-import { validate as isValidUuid, NIL } from 'uuid';
-import { Node } from '../src';
+import test from 'ava';
+import { Transform, Type } from 'class-transformer';
+import { Node } from '../source/entity/node.js';
+import { Dictionary, Entity } from '../source/entity/entity.js';
+import { EntitySet } from '../source/entity/entity-set.js';
 
-const testNode = Node.load({ customProperty: [0, 1, 2, 3] });
+class CustomNode extends Node {
+  /* eslint-disable new-cap */
+  @Type(() => URL)
+  @Transform(({ value }) => new URL(value), { toClassOnly: true })
+  @Transform(({ value }) => (value as URL).href, { toPlainOnly: true })
+  url: URL;
+  /* eslint-enable new-cap */
 
-class NodeSubclass extends Node {
-  readonly type: string = 'node_subclass';
-  requiredProperty!: string;
-  optionalProperty?: string;
-  defaultProperty!: string;
+  type = 'custom';
 
-  static new(
-    requiredProperty: string,
-    optionalProperty?: string,
-    defaultProperty = 'Default'
-  ): NodeSubclass {
-    return new this({
-      requiredProperty: requiredProperty,
-      optionalProperty: optionalProperty,
-      defaultProperty: defaultProperty,
-    });
+  constructor(
+    url: URL,
+    public defaultProperty: number,
+    public optionalProperty?: string,
+    labels: string[] = [],
+  ) {
+    super();
+    this.url = url;
+    this.assignId();
   }
 
-  protected override get uniqueValues(): unknown {
-    return [this.requiredProperty];
+  override getIdSeed(): unknown {
+    return [this.url];
   }
 }
+Node.types.set('custom', CustomNode);
 
-test('Nodes receive an id', () => {
-  const idNode = Node.new();
-  expect(idNode.id).not.toBe(NIL);
-  expect(isValidUuid(idNode.id)).toBe(true);
+test('object creation', (t) => {
+  const n = new Node('test', ['random label']);
+  t.not(n.id, Entity.emptyId);
+  t.assert(n.labels.size === 1);
+  t.assert(n.labels.has('random label'));
 });
 
-test('Nodes constructed with arbitrary properties', () => {
-  expect(testNode).toHaveProperty('customProperty');
-  expect(Array.isArray(testNode.customProperty)).toBe(true);
+test('automatic serialization', (t) => {
+  const n = new Node('test', ['random label']);
+  n.property = 'Test property';
+  const json = n.serialize();
+  const nn = Node.load(json);
+  t.assert(nn.property === 'Test property');
+  t.assert(nn.labels instanceof Set);
 });
 
-test('Node serialization preserves id, structure', () => {
-  const json = JSON.stringify(testNode);
-  const testNode2 = Node.load(json);
-  const json2 = JSON.stringify(testNode2);
-
-  expect(testNode.id).toBe(testNode2.id);
-  expect(json).toBe(json2);
+test('explicit subclass deserialization', (t) => {
+  const n = new CustomNode(new URL('https://test.com'), 5);
+  const nn = CustomNode.load(n.serialize());
+  t.is(n.url.hostname, nn.url.hostname);
 });
 
-test('Deserialization preserves object identity', () => {
-  const n = Node.new();
-  expect(n.getTable).toBeDefined();
-
-  const json = JSON.stringify(n);
-  const fromJson = Node.load(json);
-  expect(fromJson.getTable).toBeDefined();
+test('unique ids', (t) => {
+  const n1 = new Node();
+  const n2 = new Node();
+  t.not(n1.id, n2.id);
 });
 
-test('Node subclass works', () => {
-  const n = NodeSubclass.new('Test message');
-  expect(n.requiredProperty).toBeDefined();
+test('custom class id generation', (t) => {
+  const n1 = new CustomNode(new URL('http://test.com'), 1);
+  const n2 = new CustomNode(new URL('http://test.com'), 2);
+  const n3 = new CustomNode(new URL('http://subsite.test.com'), 3);
+
+  t.is(n1.id, n2.id);
+  t.not(n1.id, n3.id);
 });
 
-test('Default valued properties can be overwritten', () => {
-  const n = NodeSubclass.new('prop 1', 'prop 2', 'prop 3');
+test('mixed subclass deserialization', (t) => {
+  const n1 = new CustomNode(new URL('http://test.com'), 1);
+  const n2 = new Node('example');
+  n2.arbitrary = [1, 2, 3];
 
-  expect(n.requiredProperty).toEqual('prop 1');
-  expect(n.optionalProperty).toEqual('prop 2');
-  expect(n.defaultProperty).toEqual('prop 3');
-});
+  const a = new EntitySet<Node>([n1, n2]);
+  const json = JSON.stringify([...a].map((n) => n.serialize()));
+  const b: Node[] = (JSON.parse(json) as Dictionary[]).map((n) => Node.load(n));
 
-test('Label data roundtripped', () => {
-  const n = Node.new();
-  n.labels.push('test');
-  n.labels.push('second test');
-
-  const j = JSON.stringify(n);
-
-  const n1 = Node.load(j);
-  expect(n1.labels.includes('second test')).toBeTruthy();
-  expect(n1.labels.length).toEqual(2);
+  t.assert((b[0] as CustomNode).url.href !== undefined);
+  t.assert(Array.isArray(b[1].arbitrary));
 });
