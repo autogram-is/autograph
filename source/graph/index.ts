@@ -1,10 +1,14 @@
-import { ClassConstructor } from 'class-transformer';
-import { Edge } from '../entity/edge.js';
-import { Node } from '../entity/node.js';
-import { Uuid, Reference, Entity, Dictionary } from '../entity/entity.js';
-import { EntityMap } from '../entity/entity-map.js';
+import {
+  Entity,
+  Edge,
+  Node,
+  Uuid,
+  Reference,
+  Dictionary,
+  EntityMap,
+  EntityFilter,
+} from '../entity/index.js';
 
-export type EntityFilter<E extends Entity = Entity> = (entity: E) => boolean;
 export type Predicate = string | typeof Edge;
 
 export interface GraphData {

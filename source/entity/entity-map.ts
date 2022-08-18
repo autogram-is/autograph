@@ -1,4 +1,4 @@
-import { Uuid, Entity } from './entity.js';
+import { Uuid, Entity } from './index.js';
 
 export class EntityMap<T extends Entity = Entity> extends Map<Uuid, T> {
   constructor(values?: T[]) {

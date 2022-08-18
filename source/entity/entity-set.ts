@@ -1,4 +1,4 @@
-import { Uuid, Entity, Reference } from '../entity/entity.js';
+import { Uuid, Entity, Reference } from './index.js';
 
 export class EntitySet<T extends Entity = Entity> extends Set<T> {
   private readonly ids: Set<Uuid> = new Set<Uuid>();

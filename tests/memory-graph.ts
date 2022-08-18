@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import test from 'ava';
 import { Node } from '../source/entity/node.js';
 import { Edge } from '../source/entity/edge.js';
-import { JsonGraph } from '../source/graph/json-graph.js';
+import { MemoryGraph } from '../source/graph/memory-graph.js';
 
 const testFile = 'test.json';
 
@@ -12,9 +12,9 @@ test.after('clean up', (t) => {
   });
 });
 
-const g = new JsonGraph({ filename: testFile });
+const g = new MemoryGraph();
 
-test('graph population', async (t) => {
+test('graph population', (t) => {
   const nodeCount = 10;
   const edgeCount = 20;
 
@@ -37,18 +37,6 @@ test('graph population', async (t) => {
     g.set(edge);
   }
 
-  t.assert(g.nodes.size > 0);
-  t.assert(g.edges.size > 0);
-});
-
-test('loading file data', (t) => {
-  g.nodes.clear();
-  g.edges.clear();
-  t.assert(g.nodes.size === 0);
-  t.assert(g.edges.size === 0);
-
-  g.load();
-  
   t.assert(g.nodes.size > 0);
   t.assert(g.edges.size > 0);
 });

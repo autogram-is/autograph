@@ -1,5 +1,11 @@
-import { plainToInstance, ClassConstructor } from 'class-transformer';
-import { Uuid, Entity, Reference, Dictionary } from './entity.js';
+import {
+  hydrate,
+  ClassConstructor,
+  Uuid,
+  Entity,
+  Reference,
+  Dictionary,
+} from './index.js';
 
 export class Edge extends Entity {
   static readonly types = new Map<string, ClassConstructor<any>>();
@@ -13,7 +19,7 @@ export class Edge extends Entity {
     ) as Dictionary;
     if ('id' in object && 'predicate' in object) {
       const ctor = Edge.types.get(object.predicate as string) ?? Edge;
-      return plainToInstance(
+      return hydrate(
         ctor,
         object,
         Entity.getSerializerOptions(),

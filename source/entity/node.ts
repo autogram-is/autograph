@@ -2,10 +2,11 @@
 import {
   Transform,
   Type,
-  plainToInstance,
+  hydrate,
   ClassConstructor,
-} from 'class-transformer';
-import { Entity, Dictionary } from './entity.js';
+  Entity,
+  Dictionary,
+} from './index.js';
 
 export class Node extends Entity {
   static readonly types = new Map<string, ClassConstructor<any>>();
@@ -19,7 +20,7 @@ export class Node extends Entity {
     ) as Dictionary;
     if ('id' in object && 'type' in object) {
       const ctor = Node.types.get(object.type as string) ?? Node;
-      return plainToInstance(
+      return hydrate(
         ctor,
         object,
         Entity.getSerializerOptions(),

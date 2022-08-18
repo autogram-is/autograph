@@ -1,16 +1,13 @@
-/* eslint-disable import/no-unassigned-import */
-import 'reflect-metadata';
-import {
-  instanceToPlain,
-  ClassTransformOptions,
-  TargetMap,
-} from 'class-transformer';
 import { v4 as uuidv4, v5 as uuidv5, NIL as NilUuid, validate } from 'uuid';
 import hash from 'object-hash';
-
-export type Uuid = string;
-export type Dictionary<T = unknown> = NodeJS.Dict<T>;
-export type Reference<T extends Entity = Entity> = T | Uuid;
+import {
+  Uuid,
+  Reference,
+  Dictionary,
+  dehydrate,
+  ClassTransformOptions,
+  TargetMap,
+} from './index.js';
 
 export abstract class Entity {
   [propName: string]: unknown;
@@ -58,12 +55,12 @@ export abstract class Entity {
   id: Uuid = Entity.emptyId;
 
   serialize(): string {
-    return JSON.stringify(instanceToPlain(this, Entity.getSerializerOptions()));
+    return JSON.stringify(dehydrate(this, Entity.getSerializerOptions()));
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   toJSON(): Dictionary {
-    return instanceToPlain(this, Entity.getSerializerOptions());
+    return dehydrate(this, Entity.getSerializerOptions());
   }
 
   protected getIdSeed(): unknown {
