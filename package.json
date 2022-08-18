@@ -62,11 +62,14 @@
     "xo": "^0.51.0"
   },
   "dependencies": {
+    "@sindresorhus/is": "^5.3.0",
     "@types/better-sqlite3": "^7.6.0",
     "better-sqlite3": "^7.6.2",
     "class-transformer": "^0.5.1",
     "object-hash": "^3.0.0",
+    "ow": "^1.0.0",
     "reflect-metadata": "^0.1.13",
+    "type-fest": "^2.18.0",
     "uuid": "^8.3.2"
   }
 }

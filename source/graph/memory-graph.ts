@@ -1,3 +1,4 @@
+import is from '@sindresorhus/is';
 import {
   Entity,
   Node,
@@ -6,65 +7,84 @@ import {
   EntityMap,
   EntityFilter,
   Dictionary,
-  dehydrate,
 } from '../entity/index.js';
-import { Graph, GraphData } from './index.js';
+import { EdgeSelector, Graph, GraphData, NodeSelector } from './index.js';
 
 export class MemoryGraph implements Graph, GraphData {
   nodes = new EntityMap<Node>();
   edges = new EntityMap<Edge>();
 
-  get(id: string): Entity | undefined {
-    return this.nodes.get(id) ?? this.edges.get(id);
-  }
-
-  set(entity: Entity): this {
-    if (entity instanceof Node) {
-      this.nodes.set(entity.id, entity);
-    } else if (entity instanceof Edge) {
-      this.edges.set(entity.id, entity);
+  set(input: Entity | Entity[]): this {
+    if (!is.array(input)) input = [input];
+    for (const ent of input) {
+      if (ent instanceof Node) this.nodes.add(ent);
+      else if (ent instanceof Edge) this.edges.add(ent);
     }
 
     return this;
   }
 
-  has(r: Reference): boolean {
-    if (this.nodes.has(Entity.idFromReference(r))) {
-      return true;
+  getNode(id: string): Node | undefined {
+    return this.nodes.get(id);
+  }
+
+  getEdge(id: string): Edge | undefined {
+    return this.edges.get(id);
+  }
+
+  deleteNode(r: Reference<Node> | Array<Reference<Node>>): number {
+    if (!is.array(r)) r = [r];
+    let count = 0;
+    for (const ref of r) {
+      if (this.nodes.delete(Entity.idFromReference(ref))) count++;
     }
 
-    if (this.edges.has(Entity.idFromReference(r))) {
-      return true;
+    return count;
+  }
+
+  deleteEdge(r: Reference<Edge> | Array<Reference<Edge>>): number {
+    if (!is.array(r)) r = [r];
+    let count = 0;
+    for (const ref of r) {
+      if (this.edges.delete(Entity.idFromReference(ref))) count++;
     }
 
-    return false;
+    return count;
   }
 
-  delete(r: Reference): void {
+  findNode<T extends Node = Node>(
+    r: NodeSelector,
+    fn?: EntityFilter<Node> | undefined,
+  ): T | undefined {
     throw new Error('Method not implemented.');
   }
 
-  find<T extends Entity = Entity>(f: EntityFilter<T>): T | undefined {
+  findEdge<T extends Edge = Edge>(
+    r: EdgeSelector,
+    fn?: EntityFilter<Edge> | undefined,
+  ): T | undefined {
     throw new Error('Method not implemented.');
   }
 
-  filter<T extends Entity = Entity>(f: EntityFilter<T>): T[] {
+  matchNodes<T extends Node = Node>(
+    r: NodeSelector,
+    fn?: EntityFilter<Node> | undefined,
+  ): T[] {
     throw new Error('Method not implemented.');
   }
 
-  traverse(
-    start: Reference<Node>,
-    predicate: string,
-    end: Reference<Node>,
-  ): GraphData {
+  matchEdges<T extends Edge = Edge>(
+    r: EdgeSelector,
+    fn?: EntityFilter<Edge> | undefined,
+  ): T[] {
     throw new Error('Method not implemented.');
   }
 
-  toJSON(): Dictionary {
-    const options = Entity.getSerializerOptions();
-    return {
-      nodes: instanceToPlain([...this.nodes.values()], options),
-      edges: instanceToPlain([...this.edges.values()], options),
-    }
+  countNodes(r: NodeSelector, fn?: EntityFilter<Node> | undefined): number {
+    throw new Error('Method not implemented.');
+  }
+
+  countEdges(r: EdgeSelector, fn?: EntityFilter<Edge> | undefined): number {
+    throw new Error('Method not implemented.');
   }
 }

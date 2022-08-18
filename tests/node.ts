@@ -1,7 +1,7 @@
 import test from 'ava';
 import { Transform, Type } from 'class-transformer';
 import { Node } from '../source/entity/node.js';
-import { Dictionary, Entity } from '../source/entity/entity.js';
+import { Dictionary, Entity } from '../source/entity/index.js';
 import { EntitySet } from '../source/entity/entity-set.js';
 
 class CustomNode extends Node {

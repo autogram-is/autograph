@@ -1,12 +1,6 @@
 /* eslint-disable new-cap */
-import {
-  Transform,
-  Type,
-  hydrate,
-  ClassConstructor,
-  Entity,
-  Dictionary,
-} from './index.js';
+import { Entity, Dictionary } from './entity.js';
+import { Transform, Type, hydrate, ClassConstructor } from './index.js';
 
 export class Node extends Entity {
   static readonly types = new Map<string, ClassConstructor<any>>();

@@ -1,11 +1,5 @@
-import {
-  hydrate,
-  ClassConstructor,
-  Uuid,
-  Entity,
-  Reference,
-  Dictionary,
-} from './index.js';
+import { Entity, Uuid, Reference, Dictionary } from './entity.js';
+import { hydrate, ClassConstructor } from './index.js';
 
 export class Edge extends Entity {
   static readonly types = new Map<string, ClassConstructor<any>>();

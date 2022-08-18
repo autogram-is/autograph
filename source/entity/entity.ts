@@ -1,13 +1,27 @@
+/* eslint-disable import/no-unassigned-import */
+import 'reflect-metadata';
 import { v4 as uuidv4, v5 as uuidv5, NIL as NilUuid, validate } from 'uuid';
 import hash from 'object-hash';
 import {
-  Uuid,
-  Reference,
-  Dictionary,
-  dehydrate,
+  instanceToPlain as dehydrate,
   ClassTransformOptions,
   TargetMap,
-} from './index.js';
+} from 'class-transformer';
+
+export {
+  plainToInstance as hydrate,
+  instanceToPlain as dehydrate,
+  Type,
+  Transform,
+  ClassConstructor,
+  ClassTransformOptions,
+  TargetMap,
+} from 'class-transformer';
+
+export type Uuid = string;
+export type Dictionary<T = unknown> = NodeJS.Dict<T>;
+export type Reference<T extends Entity = Entity> = T | Uuid;
+export type EntityFilter<T extends Entity = Entity> = (input: T) => boolean;
 
 export abstract class Entity {
   [propName: string]: unknown;

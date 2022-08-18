@@ -1,16 +1,7 @@
 import * as fs from 'node:fs';
 import test from 'ava';
-import { Node } from '../source/entity/node.js';
-import { Edge } from '../source/entity/edge.js';
+import { Node, Edge } from '../source/entity/index.js';
 import { MemoryGraph } from '../source/graph/memory-graph.js';
-
-const testFile = 'test.json';
-
-test.after('clean up', (t) => {
-  fs.rm(testFile, (error) => {
-    if (error) throw error;
-  });
-});
 
 const g = new MemoryGraph();
 
