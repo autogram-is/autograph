@@ -5,12 +5,10 @@ import { Dictionary, Entity } from '../source/entity/index.js';
 import { EntitySet } from '../source/entity/entity-set.js';
 
 class CustomNode extends Node {
-  /* eslint-disable new-cap */
   @Type(() => URL)
   @Transform(({ value }) => new URL(value), { toClassOnly: true })
   @Transform(({ value }) => (value as URL).href, { toPlainOnly: true })
   url: URL;
-  /* eslint-enable new-cap */
 
   type = 'custom';
 

@@ -1,4 +1,3 @@
-/* eslint-disable new-cap */
 import { Entity, Dictionary } from './entity.js';
 import { Transform, Type, hydrate, ClassConstructor } from './index.js';
 

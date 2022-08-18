@@ -25,7 +25,10 @@
   "xo": {
     "space": true,
     "prettier": true,
-    "bracketSpacing": true
+    "bracketSpacing": true,
+    "rules": {
+      "new-cap": "off"
+    }
   },
   "prettier": {
     "editorconfig": true,
