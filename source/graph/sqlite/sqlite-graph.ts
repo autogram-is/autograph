@@ -149,7 +149,7 @@ export class SqliteGraph implements Graph, GraphStorage {
   ): T[] {
     const criteria: string[] = [];
 
-    if (typeof(r.label) === 'string') {
+    if (typeof r.label === 'string') {
       criteria.push(`label LIKE '%${r.label}%'`);
     }
 
@@ -182,11 +182,14 @@ export class SqliteGraph implements Graph, GraphStorage {
     }
 
     if (typeof r.sourceOrTarget === 'string') {
-      criteria.push(`(source = '${r.sourceOrTarget}' OR target = '${r.sourceOrTarget}'`);
+      criteria.push(
+        `(source = '${r.sourceOrTarget}' OR target = '${r.sourceOrTarget}'`,
+      );
     } else {
       if (typeof r.source === 'string') {
         criteria.push(`source = '${r.source}'`);
       }
+
       if (typeof r.target === 'string') {
         criteria.push(`target = '${r.target}'`);
       }
