@@ -5,13 +5,14 @@ export const statements = {
     insert: `INSERT INTO node (id, type, data) 
       VALUES(@id, @type, json(@data))`,
     update: `UPDATE node SET data = json(@data) WHERE id = @id;`,
-    upsert: `INSERT INTO node (id, type, data) VALUES(@id, @type, json(@data))
-      ON CONFLICT(id) DO UPDATE SET data = excluded.data;`,
+    upsert: `INSERT INTO node (id, type, labels, data) VALUES(@id, @type, @labels, json(@data))
+      ON CONFLICT(id) DO UPDATE SET labels = excluded.labels, data = excluded.data;`,
     delete: 'DELETE FROM node WHERE id IN (?)',
     schema: `
       CREATE TABLE IF NOT EXISTS node (
         id   TEXT NOT NULL,
         type TEXT NOT NULL,
+        labels JSON,
         data JSON,
         UNIQUE(id)
       );`,

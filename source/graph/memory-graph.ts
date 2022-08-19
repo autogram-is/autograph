@@ -54,15 +54,61 @@ export class MemoryGraph implements Graph, GraphData {
 
   matchNodes<T extends Node = Node>(
     r: NodeSelector,
-    fn?: EntityFilter<Node> | undefined,
+    fn?: EntityFilter<Node>,
   ): T[] {
-    throw new Error('Method not implemented.');
+    const result: T[] = [];
+    const typeFunc = is.string(r.label)
+      ? (v: Node) => v.labels.has(r.label!)
+      : () => true;
+
+    const labelFunc = is.string(r.label)
+      ? (v: Node) => v.labels.has(r.label!)
+      : () => true;
+
+    const customFunc = is.function_(fn) ? fn : () => true;
+
+    for (const n of this.nodes.values()) {
+      if (labelFunc(n) && typeFunc(n) && customFunc(n)) result.push(n as T);
+    }
+
+    return result;
   }
 
   matchEdges<T extends Edge = Edge>(
     r: EdgeSelector,
-    fn?: EntityFilter<Edge> | undefined,
+    fn?: EntityFilter<Edge>,
   ): T[] {
-    throw new Error('Method not implemented.');
+    const result: T[] = [];
+    const predFunc = is.string(r.predicate)
+      ? (edge: Edge) => edge.predicate === r.predicate
+      : () => true;
+
+    const sourceFunc = is.string(r.source)
+      ? (edge: Edge) => edge.source === r.source
+      : () => true;
+
+    const targetFunc = is.string(r.target)
+      ? (edge: Edge) => edge.target === r.target
+      : () => true;
+
+    const eitherFunc = is.string(r.sourceOrTarget)
+      ? (edge: Edge) =>
+          edge.source === r.sourceOrTarget || edge.target === r.sourceOrTarget
+      : () => true;
+
+    const customFunc = is.function_(fn) ? fn : () => true;
+
+    for (const edge of this.edges.values()) {
+      if (
+        predFunc(edge) &&
+        sourceFunc(edge) &&
+        targetFunc(edge) &&
+        eitherFunc(edge) &&
+        customFunc(edge)
+      )
+        result.push(edge as T);
+    }
+
+    return result;
   }
 }

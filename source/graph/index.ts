@@ -16,14 +16,13 @@ export interface GraphData {
 }
 
 export type NodeSelector = RequireAtLeastOne<{
-  id: Uuid;
+  [key: string]: string;
   type: string;
   label: string;
-  anyLabel: string[];
 }>;
 
 export type EdgeSelector = RequireAtLeastOne<{
-  id: Uuid;
+  [key: string]: string;
   predicate: string;
   source: Uuid;
   target: Uuid;

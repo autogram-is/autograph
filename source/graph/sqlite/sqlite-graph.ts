@@ -91,6 +91,7 @@ export class SqliteGraph implements Graph, GraphStorage {
       this.db.prepare(statements.node.upsert).run({
         id: n.id,
         type: n.type,
+        labels: JSON.stringify(n.labels),
         data: n.serialize(),
       });
     }
@@ -144,15 +145,64 @@ export class SqliteGraph implements Graph, GraphStorage {
 
   matchNodes<T extends Node = Node>(
     r: NodeSelector,
-    fn?: EntityFilter<Node> | undefined,
+    fn?: EntityFilter<Node>,
   ): T[] {
-    throw new Error('Method not implemented.');
+    const criteria: string[] = [];
+
+    if (typeof(r.label) === 'string') {
+      criteria.push(`label LIKE '%${r.label}%'`);
+    }
+
+    if (typeof r.type === 'string') {
+      criteria.push(`type = '${r.type}'`);
+    }
+
+    let sql = statements.node.select;
+    if (criteria.length > 0) {
+      sql += ` WHERE ${criteria.join(' AND ')};`;
+    }
+
+    const customFunc = is.function_(fn) ? fn : () => true;
+
+    return this.db
+      .prepare(sql)
+      .all()
+      .map((v: Dictionary) => Node.load(v.data as string) as T)
+      .filter((node: T) => customFunc(node));
   }
 
   matchEdges<T extends Edge = Edge>(
     r: EdgeSelector,
-    fn?: EntityFilter<Edge> | undefined,
+    fn?: EntityFilter<Edge>,
   ): T[] {
-    throw new Error('Method not implemented.');
+    const criteria: string[] = [];
+
+    if (typeof r.predicate === 'string') {
+      criteria.push(`predicate = '${r.predicate}'`);
+    }
+
+    if (typeof r.sourceOrTarget === 'string') {
+      criteria.push(`(source = '${r.sourceOrTarget}' OR target = '${r.sourceOrTarget}'`);
+    } else {
+      if (typeof r.source === 'string') {
+        criteria.push(`source = '${r.source}'`);
+      }
+      if (typeof r.target === 'string') {
+        criteria.push(`target = '${r.target}'`);
+      }
+    }
+
+    let sql = statements.edge.select;
+    if (criteria.length > 0) {
+      sql += ` WHERE ${criteria.join(' AND ')};`;
+    }
+
+    const customFunc = is.function_(fn) ? fn : () => true;
+
+    return this.db
+      .prepare(sql)
+      .all()
+      .map((v: Dictionary) => Edge.load(v.data as string) as T)
+      .filter((edge: T) => customFunc(edge));
   }
 }
