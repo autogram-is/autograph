@@ -11,9 +11,23 @@ class IsTestedWith extends Edge {
   }
 }
 
-test('edge id collision', (t) => {
-  const n = new Node('test', ['random label']);
-  t.not(n.id, Entity.emptyId);
-  t.assert(n.labels.size === 1);
-  t.assert(n.labels.has('random label'));
+test('id collision', (t) => {
+  const n1 = new Node('test', ['random label']);
+  const n2 = new Node('test', ['different label']);
+  const e1 = new Edge(n1, 'knows_of', n2);
+  const e2 = new Edge(n1, 'knows_of', n2);
+  const e3 = new Edge(n2, 'knows_of', n1);
+
+  t.is(e1.id, e2.id);
+  t.not(e1.id, e3.id);
+});
+
+test('serialization', (t) => {
+  const n1 = new Node('test', ['random label']);
+  const n2 = new Node('test', ['different label']);
+  const e1 = new Edge(n1, 'knows_of', n2);
+
+  const e2 = Edge.load(e1.serialize());
+  t.deepEqual(e1, e2);
+  t.is(e2.properties()['id'], e2.id);
 });

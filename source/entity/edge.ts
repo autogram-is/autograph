@@ -11,6 +11,7 @@ export class Edge extends Entity {
     const object = (
       typeof data === 'string' ? JSON.parse(data) : data
     ) as Dictionary;
+
     if ('id' in object && 'predicate' in object) {
       const ctor = Edge.types.get(object.predicate as string) ?? Edge;
       return hydrate(

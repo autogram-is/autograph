@@ -164,11 +164,10 @@ export class SqliteGraph implements Graph, GraphStorage {
 
     const customFunc = is.function_(fn) ? fn : () => true;
 
-    return this.db
-      .prepare(sql)
-      .all()
-      .map((v: Dictionary) => Node.load(v.data as string) as T)
-      .filter((node: T) => customFunc(node));
+    const stmt = this.db.prepare(sql);
+    return stmt.pluck().all()
+      .map((data: string) => Node.load(data) as T)
+      .filter((edge: T) => customFunc(edge));
   }
 
   matchEdges<T extends Edge = Edge>(
@@ -183,7 +182,7 @@ export class SqliteGraph implements Graph, GraphStorage {
 
     if (typeof r.sourceOrTarget === 'string') {
       criteria.push(
-        `(source = '${r.sourceOrTarget}' OR target = '${r.sourceOrTarget}'`,
+        `(source = '${r.sourceOrTarget}' OR target = '${r.sourceOrTarget}')`,
       );
     } else {
       if (typeof r.source === 'string') {
@@ -202,10 +201,9 @@ export class SqliteGraph implements Graph, GraphStorage {
 
     const customFunc = is.function_(fn) ? fn : () => true;
 
-    return this.db
-      .prepare(sql)
-      .all()
-      .map((v: Dictionary) => Edge.load(v.data as string) as T)
+    const stmt = this.db.prepare(sql);
+    return stmt.pluck().all()
+      .map((data: string) => Edge.load(data) as T )
       .filter((edge: T) => customFunc(edge));
   }
 }
