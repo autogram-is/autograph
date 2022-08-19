@@ -27,6 +27,8 @@ const sqliteGraphDefaults: SqliteGraphOptions = {
   },
 };
 
+export { Database, SqliteError, Statement, Options } from 'better-sqlite3';
+
 export class SqliteGraph implements Graph, GraphStorage {
   config: SqliteGraphOptions = sqliteGraphDefaults;
   db!: Database;
