@@ -52,20 +52,6 @@ export class MemoryGraph implements Graph, GraphData {
     return count;
   }
 
-  findNode<T extends Node = Node>(
-    r: NodeSelector,
-    fn?: EntityFilter<Node> | undefined,
-  ): T | undefined {
-    throw new Error('Method not implemented.');
-  }
-
-  findEdge<T extends Edge = Edge>(
-    r: EdgeSelector,
-    fn?: EntityFilter<Edge> | undefined,
-  ): T | undefined {
-    throw new Error('Method not implemented.');
-  }
-
   matchNodes<T extends Node = Node>(
     r: NodeSelector,
     fn?: EntityFilter<Node> | undefined,
@@ -77,14 +63,6 @@ export class MemoryGraph implements Graph, GraphData {
     r: EdgeSelector,
     fn?: EntityFilter<Edge> | undefined,
   ): T[] {
-    throw new Error('Method not implemented.');
-  }
-
-  countNodes(r: NodeSelector, fn?: EntityFilter<Node> | undefined): number {
-    throw new Error('Method not implemented.');
-  }
-
-  countEdges(r: EdgeSelector, fn?: EntityFilter<Edge> | undefined): number {
     throw new Error('Method not implemented.');
   }
 }

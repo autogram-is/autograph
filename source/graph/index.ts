@@ -39,15 +39,6 @@ export interface Graph {
   deleteNode(r: Reference<Node> | Array<Reference<Node>>): number;
   deleteEdge(r: Reference<Edge> | Array<Reference<Edge>>): number;
 
-  findNode<T extends Node = Node>(
-    r: NodeSelector,
-    fn?: EntityFilter<Node>,
-  ): T | undefined;
-  findEdge<T extends Edge = Edge>(
-    r: EdgeSelector,
-    fn?: EntityFilter<Edge>,
-  ): T | undefined;
-
   matchNodes<T extends Node = Node>(
     r: NodeSelector,
     fn?: EntityFilter<Node>,
@@ -56,9 +47,6 @@ export interface Graph {
     r: EdgeSelector,
     fn?: EntityFilter<Edge>,
   ): T[];
-
-  countNodes(r: NodeSelector, fn?: EntityFilter<Node>): number;
-  countEdges(r: EdgeSelector, fn?: EntityFilter<Edge>): number;
 }
 
 export interface GraphStorage {
