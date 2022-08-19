@@ -1,7 +1,6 @@
 export { Node } from './node.js';
 export { Edge } from './edge.js';
 export { EntityMap } from './entity-map.js';
-export { EntitySet } from './entity-set.js';
 export { Entity } from './entity.js';
 
 export {
