@@ -1,7 +1,7 @@
 import test from 'ava';
 import { Transform, Type } from 'class-transformer';
 import { Node } from '../source/entity/node.js';
-import { Dictionary, Entity, EntityMap } from '../source/entity/index.js';
+import { Entity, EntityMap } from '../source/entity/index.js';
 
 class CustomNode extends Node {
   @Type(() => URL)
@@ -72,6 +72,8 @@ test('mixed subclass deserialization', (t) => {
 
   const a = new EntityMap<Node>([n1, n2]);
   const b = [...a.values()].map((n) => Node.load(n.serialize()));
+
+  console.log(n1.properties());
 
   t.assert((b[0] as CustomNode).url.href !== undefined);
   t.assert(Array.isArray(b[1].arbitrary));

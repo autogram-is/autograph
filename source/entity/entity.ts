@@ -7,6 +7,7 @@ import {
   ClassTransformOptions,
   TargetMap,
 } from 'class-transformer';
+import { getProperty, setProperty, hasProperty, deepKeys } from 'dot-prop';
 
 export {
   plainToInstance as hydrate,
@@ -67,6 +68,31 @@ export abstract class Entity {
   }
 
   id: Uuid = Entity.emptyId;
+
+  has(path: string): boolean {
+    return hasProperty(this, path);
+  }
+
+  get(path: string): unknown {
+    return getProperty(this, path);
+  }
+
+  set(path: string, value: unknown): this {
+    return setProperty(this, path, value);
+  }
+
+  keys(): string[] {
+    return deepKeys(this);
+  }
+
+  properties(): Record<string, unknown> {
+    const props: Record<string, unknown> = {};
+    for (const k of this.keys()) {
+      props[k] = this.get(k);
+    }
+
+    return props;
+  }
 
   serialize(): string {
     return JSON.stringify(dehydrate(this, Entity.getSerializerOptions()));
