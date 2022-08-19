@@ -110,8 +110,10 @@ export class SqliteGraph implements Graph, GraphStorage {
   }
 
   getNode(id: string): Node | undefined {
-    const stmt: Statement = this.db.prepare(statements.node.select);
-    const result = stmt.all({ id })[0] as Dictionary;
+    const stmt: Statement = this.db.prepare(
+      `${statements.node.select} WHERE id = ?`,
+    );
+    const result = stmt.all(id)[0] as Dictionary;
     if (!is.nullOrUndefined(result)) {
       return Node.load(result.data as string);
     }
@@ -120,7 +122,9 @@ export class SqliteGraph implements Graph, GraphStorage {
   }
 
   getEdge(id: string): Edge | undefined {
-    const stmt: Statement = this.db.prepare(statements.edge.select);
+    const stmt: Statement = this.db.prepare(
+      `${statements.edge.select} WHERE id = ?`,
+    );
     const result = stmt.all({ id })[0] as Dictionary;
     if (!is.nullOrUndefined(result)) {
       return Edge.load(result.data as string);
@@ -165,7 +169,9 @@ export class SqliteGraph implements Graph, GraphStorage {
     const customFunc = is.function_(fn) ? fn : () => true;
 
     const stmt = this.db.prepare(sql);
-    return stmt.pluck().all()
+    return stmt
+      .pluck()
+      .all()
       .map((data: string) => Node.load(data) as T)
       .filter((edge: T) => customFunc(edge));
   }
@@ -202,8 +208,10 @@ export class SqliteGraph implements Graph, GraphStorage {
     const customFunc = is.function_(fn) ? fn : () => true;
 
     const stmt = this.db.prepare(sql);
-    return stmt.pluck().all()
-      .map((data: string) => Edge.load(data) as T )
+    return stmt
+      .pluck()
+      .all()
+      .map((data: string) => Edge.load(data) as T)
       .filter((edge: T) => customFunc(edge));
   }
 }

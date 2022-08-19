@@ -36,12 +36,16 @@ test('graph population', (t) => {
 
 test('node loading', (t) => {
   const n = new Node();
+  const nn = Node.load(n.serialize());
+  t.deepEqual(n, nn);
+
   g.set(n);
   const n2 = g.getNode(n.id);
+
   t.deepEqual(n, n2);
 });
 
-test.skip('graph matching', (t) => {
+test('graph matching', (t) => {
   const nodeCount = 5;
   const edgeCount = 10;
 

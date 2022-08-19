@@ -6,7 +6,7 @@ import { Entity, Reference } from '../source/entity/index.js';
 class IsTestedWith extends Edge {
   type = 'is_tested_with';
 
-  constructor(source: Reference, target: Reference) {
+  constructor(source: Reference<Node>, target: Reference<Node>) {
     super(source, 'is_tested_with', target);
   }
 }
@@ -14,20 +14,24 @@ class IsTestedWith extends Edge {
 test('id collision', (t) => {
   const n1 = new Node('test', ['random label']);
   const n2 = new Node('test', ['different label']);
-  const e1 = new Edge(n1, 'knows_of', n2);
-  const e2 = new Edge(n1, 'knows_of', n2);
-  const e3 = new Edge(n2, 'knows_of', n1);
+  const ed1 = new Edge(n1, 'knows_of', n2);
+  const ed2 = new Edge(n1, 'knows_of', n2);
+  const ed3 = new Edge(n2, 'knows_of', n1);
 
-  t.is(e1.id, e2.id);
-  t.not(e1.id, e3.id);
+  t.is(ed1.id, ed2.id);
+  t.not(ed1.id, ed3.id);
 });
 
 test('serialization', (t) => {
   const n1 = new Node('test', ['random label']);
   const n2 = new Node('test', ['different label']);
-  const e1 = new Edge(n1, 'knows_of', n2);
+  const ed1 = new Edge(n1.id, 'knows_of', n2.id);
 
-  const e2 = Edge.load(e1.serialize());
-  t.deepEqual(e1, e2);
-  t.is(e2.properties()['id'], e2.id);
+  const json = ed1.serialize();
+  const object = JSON.parse(json);
+  console.log(object);
+
+  const ed2 = Edge.load(object);
+  t.deepEqual(ed1, ed2);
+  t.is(ed2.properties().id, ed2.id);
 });

@@ -45,7 +45,7 @@ export abstract class Entity {
   }
 
   static idFromReference(r: Reference): Uuid {
-    return typeof r === 'string' ? r : r.id;
+    return r instanceof Entity ? r.id : r;
   }
 
   static checkId(id: Uuid): boolean {

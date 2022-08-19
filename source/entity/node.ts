@@ -11,6 +11,7 @@ export class Node extends Entity {
     const object = (
       typeof data === 'string' ? JSON.parse(data) : data
     ) as Dictionary;
+
     if ('id' in object && 'type' in object) {
       const ctor = Node.types.get(object.type as string) ?? Node;
       return hydrate(
