@@ -27,11 +27,7 @@ test('serialization', (t) => {
   const n2 = new Node('test', ['different label']);
   const ed1 = new Edge(n1.id, 'knows_of', n2.id);
 
-  const json = ed1.serialize();
-  const object = JSON.parse(json);
-  console.log(object);
-
-  const ed2 = Edge.load(object);
+  const ed2 = Edge.load(ed1.serialize());
   t.deepEqual(ed1, ed2);
   t.is(ed2.properties().id, ed2.id);
 });
