@@ -100,7 +100,7 @@ export abstract class Entity {
   }
 
   /**
-   * Given an input value, generates a Uuid that serves as a hash for the object. If no input is given, generates a random Uuid. 
+   * Given an input value, generates a Uuid that serves as a hash for the object. If no input is given, generates a random Uuid.
    *
    * @static
    * @param {?unknown} [hashValue]
@@ -124,7 +124,7 @@ export abstract class Entity {
   id: Uuid = Entity.emptyId;
 
   /**
-   * Checks whether the property at the given path exists.  
+   * Checks whether the property at the given path exists.
    *
    * @param {string} path Path of the property in the object, using `.` to separate each nested key.
    * @returns {boolean}
@@ -186,15 +186,16 @@ export abstract class Entity {
     return JSON.stringify(dehydrate(this, Entity.getSerializerOptions()));
   }
 
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   /**
-   * Returns a nested Dictionary of the object's properties, suitable for serialization. 
+   * Returns a nested Dictionary of the object's properties, suitable for serialization.
    *
    * @returns {Dictionary}
    */
+  /* eslint-disable @typescript-eslint/naming-convention */
   toJSON(): Dictionary {
     return dehydrate(this, Entity.getSerializerOptions());
   }
+  /* eslint-enable @typescript-eslint/naming-convention */
 
   /**
    * Returns the unique values that should be used to generate the object's ID. If null, a random Uuid will be generated.
