@@ -1,20 +1,19 @@
+export { Node } from './node.js';
+export { Edge } from './edge.js';
+export { EntityMap } from './entity-map.js';
+export { Entity } from './entity.js';
+
 export {
-  Entity,
-  Node,
-  Edge,
-  EntityMap,
   hydrate,
   dehydrate,
   Type,
   Transform,
-  Uuid,
-  Reference,
-  Dictionary,
-  EntityFilter,
   ClassConstructor,
   ClassTransformOptions,
   TargetMap,
-} from './entity/index.js';
+} from './entity.js';
+
+export { Uuid, Reference, Dictionary, EntityFilter } from './entity.js';
 
 export {
   Graph,
@@ -23,4 +22,4 @@ export {
   NodeSelector,
   EdgeSelector,
   MemoryGraph,
-} from './graph/index.js';
+} from './graph.js';

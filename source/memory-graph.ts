@@ -1,4 +1,5 @@
 import is from '@sindresorhus/is';
+import { EdgeSelector, Graph, GraphData, NodeSelector } from './graph.js';
 import {
   Entity,
   Node,
@@ -7,8 +8,7 @@ import {
   EntityMap,
   EntityFilter,
   Dictionary,
-} from '../entity/index.js';
-import { EdgeSelector, Graph, GraphData, NodeSelector } from './index.js';
+} from './index.js';
 
 export class MemoryGraph implements Graph, GraphData {
   nodes = new EntityMap<Node>();

@@ -8,7 +8,7 @@ import {
   Dictionary,
   EntityMap,
   EntityFilter,
-} from '../entity/index.js';
+} from './index.js';
 
 export interface GraphData {
   nodes: EntityMap<Node>;

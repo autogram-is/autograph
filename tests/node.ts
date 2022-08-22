@@ -1,7 +1,7 @@
 import test from 'ava';
 import { Transform, Type } from 'class-transformer';
-import { Node } from '../source/entity/node.js';
-import { Entity, EntityMap } from '../source/entity/index.js';
+import { Node } from '../source/node.js';
+import { Entity, EntityMap } from '../source/index.js';
 
 class CustomNode extends Node {
   @Type(() => URL)

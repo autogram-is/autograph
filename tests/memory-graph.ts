@@ -1,6 +1,6 @@
 import test from 'ava';
-import { Node, Edge } from '../source/entity/index.js';
-import { MemoryGraph } from '../source/graph/memory-graph.js';
+import { Node, Edge } from '../source/index.js';
+import { MemoryGraph } from '../source/memory-graph.js';
 
 const g = new MemoryGraph();
 
