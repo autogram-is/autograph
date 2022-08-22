@@ -1,5 +1,5 @@
 {
-  "name": "autograph",
+  "name": "@autogram/autograph",
   "version": "0.4.0",
   "description": "Strongly typed graphlike storage for arbitrary data.",
   "exports": "./dist/source/index.js",
@@ -66,8 +66,6 @@
   },
   "dependencies": {
     "@sindresorhus/is": "^5.3.0",
-    "@types/better-sqlite3": "^7.6.0",
-    "better-sqlite3": "^7.6.2",
     "class-transformer": "^0.5.1",
     "dot-prop": "^7.2.0",
     "object-hash": "^3.0.0",

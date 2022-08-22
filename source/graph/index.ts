@@ -54,10 +54,3 @@ export interface GraphStorage {
 }
 
 export { MemoryGraph } from './memory-graph.js';
-export {
-  SqliteGraph,
-  Database,
-  SqliteError,
-  Statement,
-  Options,
-} from './sqlite/sqlite-graph.js';
