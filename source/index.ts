@@ -23,5 +23,4 @@ export {
   NodeSelector,
   EdgeSelector,
   MemoryGraph,
-  SqliteGraph,
 } from './graph/index.js';
