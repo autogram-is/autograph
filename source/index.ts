@@ -21,5 +21,5 @@ export {
   GraphStorage,
   NodeSelector,
   EdgeSelector,
-  MemoryGraph,
+  JsonGraph,
 } from './graph.js';

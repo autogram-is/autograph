@@ -1,8 +1,8 @@
 import test from 'ava';
 import { Node, Edge } from '../source/index.js';
-import { MemoryGraph } from '../source/memory-graph.js';
+import { JsonGraph } from '../source/json-graph.js';
 
-const g = new MemoryGraph();
+const j = new JsonGraph();
 
 test('graph population', (t) => {
   const nodeCount = 100;
@@ -14,21 +14,21 @@ test('graph population', (t) => {
       .toString(36)
       .replace(/[^a-z]+/g, '')
       .slice(0, 5);
-    g.set(n);
+    j.set(n);
   }
 
-  const nodes = [...g.nodes.values()];
+  const nodes = [...j.nodes.values()];
   for (let i = 1; i < edgeCount; i++) {
     const edge = new Edge(
       nodes[Math.floor(Math.random() * nodes.length)],
       'knows_of',
       nodes[Math.floor(Math.random() * nodes.length)],
     );
-    g.set(edge);
+    j.set(edge);
   }
 
-  t.assert(g.nodes.size > 0);
-  t.assert(g.edges.size > 0);
+  t.assert(j.nodes.size > 0);
+  t.assert(j.edges.size > 0);
 });
 
 test('criteria matching', (t) => {
@@ -41,20 +41,20 @@ test('criteria matching', (t) => {
       .toString(36)
       .replace(/[^a-z]+/g, '')
       .slice(0, 5);
-    g.set(n);
+    j.set(n);
   }
 
-  const nodes = [...g.nodes.values()];
+  const nodes = [...j.nodes.values()];
   for (let i = 1; i < edgeCount; i++) {
     const edge = new Edge(
       nodes[Math.floor(Math.random() * nodes.length)],
       'knows_of',
       nodes[Math.floor(Math.random() * nodes.length)],
     );
-    g.set(edge);
+    j.set(edge);
   }
 
   const nid = nodes[0].id;
-  const edges = g.matchEdges({ sourceOrTarget: nid });
+  const edges = j.matchEdges({ sourceOrTarget: nid });
   t.truthy(edges);
 });

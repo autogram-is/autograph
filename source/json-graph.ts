@@ -1,16 +1,17 @@
 import is from '@sindresorhus/is';
-import { EdgeSelector, Graph, GraphData, NodeSelector } from './graph.js';
+import mkdirp from 'mkdirp';
+import { PathLike } from 'fs';
+import { EdgeSelector, Graph, GraphData, GraphStorage, NodeSelector } from './graph.js';
 import {
   Entity,
   Node,
   Edge,
   Reference,
-  EntityMap,
   EntityFilter,
-  Dictionary,
+  EntityMap
 } from './index.js';
 
-export class MemoryGraph implements Graph, GraphData {
+export class JsonGraph implements Graph {
   nodes = new EntityMap<Node>();
   edges = new EntityMap<Edge>();
 
@@ -110,5 +111,9 @@ export class MemoryGraph implements Graph, GraphData {
     }
 
     return result;
+  }
+
+  toJSON(): Entity[] {
+    return [...this.nodes.values(), ...this.edges.values()];
   }
 }

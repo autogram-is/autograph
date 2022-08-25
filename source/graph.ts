@@ -42,6 +42,7 @@ export interface Graph {
     r: NodeSelector,
     fn?: EntityFilter<Node>,
   ): T[];
+  
   matchEdges<T extends Edge = Edge>(
     r: EdgeSelector,
     fn?: EntityFilter<Edge>,
@@ -49,8 +50,8 @@ export interface Graph {
 }
 
 export interface GraphStorage {
-  load(options?: Dictionary): Promise<void>;
-  save(options?: Dictionary): Promise<void>;
+  load(...args: unknown[]): Promise<void>;
+  save(...args: unknown[]): Promise<void>;
 }
 
-export { MemoryGraph } from './memory-graph.js';
+export { JsonGraph } from './json-graph.js';

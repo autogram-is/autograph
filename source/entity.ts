@@ -8,6 +8,7 @@ import {
   TargetMap,
 } from 'class-transformer';
 import { getProperty, setProperty, hasProperty, deepKeys } from 'dot-prop';
+import { JsonObject } from 'type-fest';
 
 export {
   plainToInstance as hydrate,
@@ -192,7 +193,7 @@ export abstract class Entity {
    * @returns {Dictionary}
    */
   /* eslint-disable @typescript-eslint/naming-convention */
-  toJSON(): Dictionary {
+  toJSON(): JsonObject {
     return dehydrate(this, Entity.getSerializerOptions());
   }
   /* eslint-enable @typescript-eslint/naming-convention */
