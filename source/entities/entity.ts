@@ -1,7 +1,5 @@
 /* eslint-disable import/no-unassigned-import */
 import 'reflect-metadata';
-import { v4 as uuidv4, v5 as uuidv5, NIL as NilUuid, validate } from 'uuid';
-import hash from 'object-hash';
 import {
   instanceToPlain as dehydrate,
   ClassTransformOptions,
@@ -10,10 +8,7 @@ import {
 import { getProperty, setProperty, hasProperty, deepKeys } from 'dot-prop';
 import { JsonObject } from 'type-fest';
 import { Dictionary } from '../index.js';
-
-interface Flavoring<FlavorT> { _type?: FlavorT; }
-type Flavor<T, FlavorT> = T & Flavoring<FlavorT>;
-export type Uuid = Flavor<string, 'uuid'>;
+import { Uuid, UuidFactory } from './uuid.js';
 
 export type Reference<T extends Entity = Entity> = T | Uuid;
 
@@ -53,14 +48,7 @@ export abstract class Entity {
    * @static
    * @type {Uuid}
    */
-  static emptyId: Uuid = NilUuid;
-  /**
-   * Unique namespace for Autograph-generated Uuids.
-   *
-   * @static
-   * @type {Uuid}
-   */
-  static namespace: Uuid = '9fc3e7e5-59d7-4d55-afa0-98a978f49bab';
+  static emptyId: Uuid = UuidFactory.nil;
 
   /**
    * Default options for the entity serializer.
@@ -102,28 +90,6 @@ export abstract class Entity {
    */
   static checkId(id: Uuid): boolean {
     return validate(id);
-  }
-
-  /**
-   * Given an input value, generates a Uuid that serves as a hash for the object. If no input is given, generates a random Uuid.
-   *
-   * @static
-   * @param {?unknown} [hashValue]
-   * @returns {Uuid}
-   */
-  static generateId(hashValue?: unknown): Uuid {
-    if (hashValue) {
-      if (typeof hashValue !== 'object') {
-        hashValue = { data: hashValue };
-      }
-
-      const hashOutput = hash(hashValue as Dictionary, {
-        encoding: 'buffer',
-      });
-      return uuidv5(hashOutput, Entity.namespace);
-    }
-
-    return uuidv4();
   }
 
   id: Uuid = Entity.emptyId;
@@ -218,7 +184,7 @@ export abstract class Entity {
    * @protected
    */
   protected assignId(): void {
-    this.id = Entity.generateId(this.getIdSeed());
+    this.id = UuidFactory.generate(this.getIdSeed());
   }
 }
 

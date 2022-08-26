@@ -1,5 +1,6 @@
 import { Dictionary } from '../index.js';
-import { Uuid, Reference, Entity, isEntity } from './entity.js';
+import { Uuid } from '../index.js';
+import { Reference, Entity, isEntity } from './entity.js';
 import { Node, isNode } from './node.js';
 import { Edge, isEdge } from './edge.js';
 

@@ -1,7 +1,7 @@
 import { Dictionary } from '../index.js';
+import { Uuid } from '../index.js';
 import {
   Entity,
-  Uuid,
   Reference,
   hydrate,
   ClassConstructor,

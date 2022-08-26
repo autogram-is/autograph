@@ -1,5 +1,8 @@
 export {
   Uuid,
+  UuidFactory
+} from './uuid.js';
+export {
   EntityFilter,
   Entity,
   isEntity,
