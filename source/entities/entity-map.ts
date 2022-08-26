@@ -1,4 +1,7 @@
-import { Uuid, Entity } from './index.js';
+import { Dictionary } from '../index.js';
+import { Uuid, Reference, Entity, isEntity } from './entity.js';
+import { Node, isNode } from './node.js';
+import { Edge, isEdge } from './edge.js';
 
 export class EntityMap<T extends Entity = Entity> extends Map<Uuid, T> {
   constructor(values?: T[]) {

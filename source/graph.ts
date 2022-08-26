@@ -1,14 +1,6 @@
 import { RequireAtLeastOne } from 'type-fest';
-import {
-  Entity,
-  Edge,
-  Node,
-  Uuid,
-  Reference,
-  Dictionary,
-  EntityMap,
-  EntityFilter,
-} from './index.js';
+import { EntityMap, EntityFilter } from './entities/index.js';
+import { Entity, Edge, Node, Uuid, Reference } from './index.js';
 
 export interface GraphData {
   nodes: EntityMap<Node>;
@@ -42,7 +34,7 @@ export interface Graph {
     r: NodeSelector,
     fn?: EntityFilter<Node>,
   ): T[];
-  
+
   matchEdges<T extends Edge = Edge>(
     r: EdgeSelector,
     fn?: EntityFilter<Edge>,

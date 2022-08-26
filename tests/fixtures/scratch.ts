@@ -4,7 +4,7 @@ const nodeCount = 20;
 const edgeCount = 100;
 
 function rand<T = Entity>(list: T[]): T {
-  return list[Math.floor(Math.random()*list.length)] as T
+  return list[Math.floor(Math.random() * list.length)];
 }
 
 const nodes: Node[] = [];

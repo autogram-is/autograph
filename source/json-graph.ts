@@ -1,15 +1,8 @@
 import is from '@sindresorhus/is';
-import mkdirp from 'mkdirp';
-import { PathLike } from 'fs';
-import { EdgeSelector, Graph, GraphData, GraphStorage, NodeSelector } from './graph.js';
-import {
-  Entity,
-  Node,
-  Edge,
-  Reference,
-  EntityFilter,
-  EntityMap
-} from './index.js';
+import { EdgeSelector, Graph, NodeSelector } from './graph.js';
+import { EntityMap } from './entities/entity-map.js';
+import { EntityFilter } from './entities/entity.js';
+import { Entity, Node, Edge, Reference } from './index.js';
 
 export class JsonGraph implements Graph {
   nodes = new EntityMap<Node>();

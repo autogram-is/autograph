@@ -1,7 +1,5 @@
 import test from 'ava';
-import { Node } from '../source/node.js';
-import { Edge } from '../source/edge.js';
-import { Entity, Reference } from '../source/index.js';
+import { Entity, Reference, Node, Edge } from '../source/index.js';
 
 class IsTestedWith extends Edge {
   type = 'is_tested_with';

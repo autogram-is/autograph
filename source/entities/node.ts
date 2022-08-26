@@ -1,5 +1,11 @@
-import { Entity, Dictionary } from './entity.js';
-import { Transform, Type, hydrate, ClassConstructor } from './index.js';
+import { Dictionary } from '../index.js';
+import {
+  Entity,
+  Transform,
+  Type,
+  hydrate,
+  ClassConstructor,
+} from './entity.js';
 
 /**
  * Description placeholder
@@ -78,4 +84,8 @@ export class Node extends Entity {
     this.labels = new Set<string>(labels);
     this.assignId();
   }
+}
+
+export function isNode(input: unknown): input is Node {
+  return input instanceof Node;
 }

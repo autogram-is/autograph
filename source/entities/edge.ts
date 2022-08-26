@@ -1,5 +1,12 @@
-import { Entity, Uuid, Reference, Dictionary } from './entity.js';
-import { Node, hydrate, ClassConstructor } from './index.js';
+import { Dictionary } from '../index.js';
+import {
+  Entity,
+  Uuid,
+  Reference,
+  hydrate,
+  ClassConstructor,
+} from './entity.js';
+import { Node } from './node.js';
 
 export class Edge extends Entity {
   static readonly types = new Map<string, ClassConstructor<any>>();
@@ -44,4 +51,8 @@ export class Edge extends Entity {
   protected getIdSeed(): unknown {
     return [this.source, this.predicate, this.target];
   }
+}
+
+export function isEdge(input: unknown): input is Edge {
+  return input instanceof Node;
 }

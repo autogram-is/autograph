@@ -9,6 +9,10 @@ import {
 } from 'class-transformer';
 import { getProperty, setProperty, hasProperty, deepKeys } from 'dot-prop';
 import { JsonObject } from 'type-fest';
+import { Dictionary } from '../index.js';
+
+export type Uuid = string;
+export type Reference<T extends Entity = Entity> = T | Uuid;
 
 export {
   plainToInstance as hydrate,
@@ -20,9 +24,6 @@ export {
   TargetMap,
 } from 'class-transformer';
 
-export type Uuid = string;
-export type Dictionary<T = unknown> = NodeJS.Dict<T>;
-export type Reference<T extends Entity = Entity> = T | Uuid;
 /**
  * Description placeholder
  *
@@ -216,4 +217,8 @@ export abstract class Entity {
   protected assignId(): void {
     this.id = Entity.generateId(this.getIdSeed());
   }
+}
+
+export function isEntity(input: unknown): input is Entity {
+  return input instanceof Entity;
 }
