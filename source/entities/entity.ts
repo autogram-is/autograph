@@ -11,7 +11,10 @@ import { getProperty, setProperty, hasProperty, deepKeys } from 'dot-prop';
 import { JsonObject } from 'type-fest';
 import { Dictionary } from '../index.js';
 
-export type Uuid = string;
+interface Flavoring<FlavorT> { _type?: FlavorT; }
+type Flavor<T, FlavorT> = T & Flavoring<FlavorT>;
+export type Uuid = Flavor<string, 'uuid'>;
+
 export type Reference<T extends Entity = Entity> = T | Uuid;
 
 export {
