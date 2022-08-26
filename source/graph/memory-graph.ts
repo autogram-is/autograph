@@ -1,6 +1,7 @@
 import is from "@sindresorhus/is";
 import { Edge, isEdge, Entity, Node, isNode } from "..";
 import { EdgeLike, GraphLike, Match, NodeLike, SetLike } from "./interface";
+import { MatchMaker } from "./match";
 
 export class Graph implements SetLike {
   protected nodeMap = new Map<string, Node>();
@@ -50,16 +51,17 @@ export class Graph implements SetLike {
   }
 
   find(...criteria: Match<Entity>[]): Entity | undefined {
-    if (criteria.length === 0 && is.string(criteria[0])) {
-      return this.get(criteria[0]);
-    }
+    const filter = new MatchMaker<Entity>(criteria);
+    throw new Error("Method not implemented.");
   }
 
   has(...criteria: Match<Entity>[]): true {
+    const filter = new MatchMaker<Entity>(criteria);
     throw new Error("Method not implemented.");
   }
 
   count(...criteria: Match<Entity>[]): number {
+    const filter = new MatchMaker<Entity>(criteria);
     throw new Error("Method not implemented.");
   }
 }
