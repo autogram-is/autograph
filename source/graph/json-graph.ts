@@ -2,7 +2,6 @@ import {
   createReadStream,
   createWriteStream,
   PathLike,
-  statSync,
 } from 'node:fs';
 import is from '@sindresorhus/is';
 import ndjson from 'ndjson';
