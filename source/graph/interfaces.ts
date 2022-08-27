@@ -4,8 +4,8 @@ import { Match } from './match.js';
 export type EntityFilter<T extends Entity = Entity> = (entity: T) => boolean;
 
 export interface Graph {
-  nodes: NodeSet;
-  edges: NodeSet;
+  nodes(...criteria: Array<Match<Node>>): NodeSet;
+  edges(...criteria: Array<Match<Edge>>): EdgeSet;
 }
 
 export interface NodeSet<T extends Node = Node> {
@@ -39,7 +39,7 @@ export interface Mutable<T extends Entity = Entity> {
 
 export interface Searchable<T extends Entity = Entity> {
   find(...criteria: Array<Match<T>>): T | undefined;
-  match(...criteria: Array<Match<T>>): Searchable<T> | undefined;
+  filter(...criteria: Array<Match<T>>): Searchable<T>;
   count(...criteria: Array<Match<T>>): number;
 }
 

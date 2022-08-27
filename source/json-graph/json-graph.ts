@@ -1,8 +1,4 @@
-import {
-  createReadStream,
-  createWriteStream,
-  PathLike,
-} from 'node:fs';
+import { createReadStream, createWriteStream, PathLike } from 'node:fs';
 import is from '@sindresorhus/is';
 import ndjson from 'ndjson';
 import {
@@ -17,13 +13,32 @@ import {
   Reference,
   Uuid,
 } from '../index.js';
-import { Mutable, Persistable, Readable } from './interfaces.js';
+import { Mutable, Persistable, Readable, Graph } from '../graph/interfaces.js';
+import { Match, MatchMaker } from '../graph/match.js';
+import { JsonNodes } from './json-nodes.js';
+import { JsonEdges } from './json-edges.js';
 
-export class JsonGraph implements Readable, Mutable, Persistable {
+export class JsonGraph implements Readable, Mutable, Persistable, Graph {
   lastSavePath?: PathLike;
 
   readonly nodeMap = new Map<string, Node>();
   readonly edgeMap = new Map<string, Edge>();
+
+  nodes(...criteria: Array<Match<Node>>): JsonNodes {
+    const m = new MatchMaker<Node>(criteria);
+    const results = [...this.nodeMap.values()].filter((input) =>
+      m.match(input),
+    );
+    return new JsonNodes(this, results);
+  }
+
+  edges(...criteria: Array<Match<Edge>>): JsonEdges {
+    const m = new MatchMaker<Edge>(criteria);
+    const results = [...this.edgeMap.values()].filter((input) =>
+      m.match(input),
+    );
+    return new JsonEdges(this, results);
+  }
 
   async load(filePath: PathLike): Promise<void> {
     return new Promise((resolve, reject) => {

@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import { URL } from 'node:url';
 import test from 'ava';
-import { JsonGraph } from '../source/graph/json-graph.js';
+import { JsonGraph } from '../source/json-graph/index.js';
 import { Node, Edge, isNode } from '../source/index.js';
 
 const testFile = new URL('fixtures/test.ndjson', import.meta.url);
@@ -53,7 +53,7 @@ test.serial('reload, clone, and merge', async (t) => {
   const j2 = new JsonGraph();
   await j2.load(testFile);
   j2.add(new Node());
-  
+
   j.add([...j2.nodeMap.values()]);
   await j.save();
 
