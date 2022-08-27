@@ -14,13 +14,14 @@ export class UuidFactory {
   static nil: Uuid = NilUuid;
 
   /**
-   * Given an input value, generates a Uuid that serves as a hash for the object. If no input is given, generates a random Uuid.
+   * Given an input value, generates a Uuid that serves as a hash for the object.
+   * If no input is given, generates a random Uuid.
    *
    * @static
    * @param {?unknown} [hashValue]
    * @returns {Uuid}
    */
-  generate(hashValue?: unknown): Uuid {
+  static generate(hashValue?: unknown): Uuid {
     if (hashValue) {
       if (!is.object(hashValue)) {
         hashValue = { data: hashValue };
@@ -35,7 +36,7 @@ export class UuidFactory {
     return uuidv4() as Uuid;
   }
 
-  isUuid(input: string): input is Uuid {
+  static isUuid(input: string): input is Uuid {
     return validate(input);
   }
 }
