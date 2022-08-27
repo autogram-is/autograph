@@ -10,8 +10,8 @@ export interface Graph {
 
 export interface NodeSet<T extends Node = Node> {
   edges(...criteria: Array<Match<T>>): EdgeSet;
-  outgoing(...criteria: Array<Match<T>>): EdgeSet;
-  incoming(...criteria: Array<Match<T>>): EdgeSet;
+  outbound(...criteria: Array<Match<T>>): EdgeSet;
+  inbound(...criteria: Array<Match<T>>): EdgeSet;
 }
 
 export interface EdgeSet<T extends Edge = Edge> {

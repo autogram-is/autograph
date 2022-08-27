@@ -16,16 +16,16 @@ export class JsonNodes extends JsonEntities<Node> implements NodeSet {
 
   edges(...criteria: Array<Match<Node>>): JsonEdges {
     return new JsonEdges(this.graph, [
-      ...this.incoming(...criteria),
-      ...this.outgoing(...criteria),
+      ...this.inbound(...criteria),
+      ...this.outbound(...criteria),
     ]);
   }
 
-  outgoing(...criteria: Array<Match<Node>>): JsonEdges {
+  outbound(...criteria: Array<Match<Node>>): JsonEdges {
     return this.graph.edges(where('source', 'in', this.ids()));
   }
 
-  incoming(...criteria: Array<Match<Node>>): JsonEdges {
+  inbound(...criteria: Array<Match<Node>>): JsonEdges {
     return this.graph.edges(where('target', 'in', this.ids()));
   }
 }
