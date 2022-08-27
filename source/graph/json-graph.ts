@@ -56,6 +56,8 @@ export class JsonGraph implements Readable, Mutable, Persistable {
       const savePath = filePath ?? this.lastSavePath;
       if (is.undefined(savePath)) {
         reject(new Error('No path for save'));
+      } else {
+        this.lastSavePath = savePath;
       }
 
       try {
