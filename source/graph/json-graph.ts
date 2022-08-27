@@ -18,17 +18,11 @@ import { Mutable, Persistable, Readable } from './interfaces.js';
 export class JsonGraph implements Readable, Mutable, Persistable {
   lastSavePath?: string;
 
-  protected nodeMap = new Map<string, Node>();
-  protected edgeMap = new Map<string, Edge>();
+  readonly nodeMap = new Map<string, Node>();
+  readonly edgeMap = new Map<string, Edge>();
 
   async load(filePath: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      try {
-        accessSync('filePath');
-      } catch {
-        reject(new Error('File path inaccessible'));
-      }
-
       createReadStream(filePath)
         .pipe(ndjson.parse())
         .on('data', (chunk: Dictionary) => {
@@ -55,26 +49,17 @@ export class JsonGraph implements Readable, Mutable, Persistable {
         reject(new Error('No path for save'));
       }
 
-      try {
-        accessSync(savePath!);
-      } catch {
-        reject(new Error('File path inaccessible'));
-      }
-
       const writeStream = createWriteStream(savePath!, 'utf8');
-      const stringer = ndjson.stringify().pipe(writeStream);
 
-      for (const node of this.nodeMap.values()) {
-        stringer.write(node.toJSON());
+      for (const entity of [
+        ...this.nodeMap.values(),
+        ...this.edgeMap.values(),
+      ]) {
+        writeStream.write(entity.serialize() + `\n`);
       }
 
-      for (const edge of this.edgeMap.values()) {
-        stringer.write(edge.toJSON());
-      }
-
-      stringer.end();
+      writeStream.end();
       writeStream.close();
-
       resolve();
     });
   }
@@ -89,20 +74,21 @@ export class JsonGraph implements Readable, Mutable, Persistable {
     return this.nodeMap.get(id) ?? this.edgeMap.get(id);
   }
 
-  add(input: Entity | Entity[]): Mutable {
+  add(input: Entity | Entity[]): this {
     if (!is.array(input)) input = [input];
-
     for (const entity of input) {
-      if (isNode(entity)) {
-        if (!this.nodeMap.has(entity.id)) this.nodeMap.set(entity.id, entity);
-      } else if (isEdge(entity) && !this.edgeMap.has(entity.id))
+      if (isNode(entity) && !this.nodeMap.has(entity.id)) {
+        console.log('setting node');
+        this.nodeMap.set(entity.id, entity);
+      } else if (isEdge(entity) && !this.edgeMap.has(entity.id)) {
         this.edgeMap.set(entity.id, entity);
+      }
     }
 
     return this;
   }
 
-  remove(input: Entity | Entity[]): Mutable {
+  remove(input: Entity | Entity[]): this {
     if (!is.array(input)) input = [input];
 
     for (const entity of input) {
@@ -116,7 +102,7 @@ export class JsonGraph implements Readable, Mutable, Persistable {
     return this;
   }
 
-  set(input: Entity | Entity[]): Mutable {
+  set(input: Entity | Entity[]): this {
     if (!is.array(input)) input = [input];
 
     for (const entity of input) {

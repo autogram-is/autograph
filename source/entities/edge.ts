@@ -56,7 +56,7 @@ export class Edge extends Entity {
 }
 
 export function isEdge(input: unknown): input is Edge {
-  return input instanceof Node;
+  return input instanceof Edge;
 }
 
 export function isEdgeData(input: unknown): input is Dictionary {
