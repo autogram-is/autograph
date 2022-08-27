@@ -1,4 +1,9 @@
-import { accessSync, createReadStream, createWriteStream } from 'node:fs';
+import {
+  createReadStream,
+  createWriteStream,
+  PathLike,
+  statSync,
+} from 'node:fs';
 import is from '@sindresorhus/is';
 import ndjson from 'ndjson';
 import {
@@ -16,51 +21,65 @@ import {
 import { Mutable, Persistable, Readable } from './interfaces.js';
 
 export class JsonGraph implements Readable, Mutable, Persistable {
-  lastSavePath?: string;
+  lastSavePath?: PathLike;
 
   readonly nodeMap = new Map<string, Node>();
   readonly edgeMap = new Map<string, Edge>();
 
-  async load(filePath: string): Promise<void> {
+  async load(filePath: PathLike): Promise<void> {
     return new Promise((resolve, reject) => {
-      createReadStream(filePath)
-        .pipe(ndjson.parse())
-        .on('data', (chunk: Dictionary) => {
-          try {
-            if (isNodeData(chunk)) this.add(Node.load(chunk));
-            if (isEdgeData(chunk)) this.add(Edge.load(chunk));
-          } catch {
-            console.error(`Couldn't load entity from JSON`);
-          }
-        })
-        .once('error', (error: Error) => {
-          reject(error);
-        })
-        .once('end', () => {
-          resolve();
-        });
+      try {
+        createReadStream(filePath)
+          .pipe(ndjson.parse())
+          .on('data', (chunk: Dictionary) => {
+            try {
+              if (isNodeData(chunk)) this.add(Node.load(chunk));
+              if (isEdgeData(chunk)) this.add(Edge.load(chunk));
+            } catch {
+              console.error(`Couldn't load entity from JSON`);
+            }
+          })
+          .once('error', (error: Error) => {
+            reject(error);
+          })
+          .once('end', () => {
+            resolve();
+          });
+      } catch (error: unknown) {
+        reject(error);
+      }
     });
   }
 
-  async save(filePath?: string): Promise<void> {
+  async save(filePath?: PathLike): Promise<void> {
     return new Promise((resolve, reject) => {
       const savePath = filePath ?? this.lastSavePath;
       if (is.undefined(savePath)) {
         reject(new Error('No path for save'));
       }
 
-      const writeStream = createWriteStream(savePath!, 'utf8');
+      try {
+        const writeStream = createWriteStream(savePath!, 'utf8');
+        writeStream
+          .once('open', () => {
+            for (const entity of [
+              ...this.nodeMap.values(),
+              ...this.edgeMap.values(),
+            ]) {
+              writeStream.write(entity.serialize() + `\n`);
+            }
 
-      for (const entity of [
-        ...this.nodeMap.values(),
-        ...this.edgeMap.values(),
-      ]) {
-        writeStream.write(entity.serialize() + `\n`);
+            writeStream.end();
+          })
+          .once('finish', () => {
+            resolve();
+          })
+          .once('error', (error: Error) => {
+            reject(error);
+          });
+      } catch (error: unknown) {
+        reject(error);
       }
-
-      writeStream.end();
-      writeStream.close();
-      resolve();
     });
   }
 
@@ -78,7 +97,6 @@ export class JsonGraph implements Readable, Mutable, Persistable {
     if (!is.array(input)) input = [input];
     for (const entity of input) {
       if (isNode(entity) && !this.nodeMap.has(entity.id)) {
-        console.log('setting node');
         this.nodeMap.set(entity.id, entity);
       } else if (isEdge(entity) && !this.edgeMap.has(entity.id)) {
         this.edgeMap.set(entity.id, entity);
