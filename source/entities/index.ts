@@ -1,7 +1,4 @@
-export {
-  Uuid,
-  UuidFactory
-} from './uuid.js';
+export { Uuid, UuidFactory } from './uuid.js';
 export {
   EntityFilter,
   Entity,
@@ -17,4 +14,3 @@ export {
 } from './entity.js';
 export { Node, isNode } from './node.js';
 export { Edge, isEdge } from './edge.js';
-export { EntityMap } from './entity-map.js';

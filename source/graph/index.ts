@@ -5,13 +5,8 @@ export {
   TraversalCost,
   TraversalOptions,
   Traversable,
-} from './interface.js';
+} from './interfaces.js';
 
-export {
-  Match,
-  MatchMaker
-} from './match.js';
+export { Match, MatchMaker } from './match.js';
 
-export {
-  Predicate
-} from './predicate.js'
+export { Predicate } from './predicate.js';

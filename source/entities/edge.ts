@@ -1,11 +1,6 @@
 import { Dictionary } from '../index.js';
-import { Uuid } from '../index.js';
-import {
-  Entity,
-  Reference,
-  hydrate,
-  ClassConstructor,
-} from './entity.js';
+import { Uuid } from './uuid.js';
+import { Entity, Reference, hydrate, ClassConstructor } from './entity.js';
 import { Node } from './node.js';
 
 export class Edge extends Entity {

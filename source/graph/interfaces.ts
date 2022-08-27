@@ -8,17 +8,20 @@ export interface Persistable {
   load(): boolean;
 }
 
-export interface GraphMutable<T extends Entity = Entity> {
-  add(input: Entity | Entity[]): GraphData<T>;
-  remove(input: Entity | Entity[]): GraphData<T>;
-  set(input: Entity | Entity[]): GraphData<T>;
+export interface Readable<T extends Entity = Entity> {
+  has(input: Reference): boolean;
+  get(input: Uuid): T | undefined;
 }
 
-export interface GraphData<T extends Entity = Entity> {
-  get(input: Uuid): T | undefined;
+export interface Mutable<T extends Entity = Entity> {
+  add(input: Entity | Entity[]): Mutable<T>;
+  remove(input: Reference | Reference[]): Mutable<T>;
+  set(input: Entity | Entity[]): Mutable<T>;
+}
+
+export interface Searchable<T extends Entity = Entity> {
   find(...criteria: Array<Match<T>>): T | undefined;
-  match(...criteria: Array<Match<T>>): GraphData<T> | undefined;
-  has(...criteria: Array<Match<T>>): true;
+  match(...criteria: Array<Match<T>>): Searchable<T> | undefined;
   count(...criteria: Array<Match<T>>): number;
 }
 
@@ -35,7 +38,11 @@ export interface EdgeLike<T extends Edge = Edge> {
   targets(...criteria: Array<Match<T>>): NodeLike;
 }
 
-export type TraversalCost = (source: Node, edge: Edge, target: Node) => number;
+export type TraversalCost = (
+  source: Reference<Node>,
+  edge: Reference<Edge>,
+  target: Reference<Node>,
+) => number;
 
 export type TraversalPath = {
   nodes: Node[];
@@ -56,6 +63,7 @@ export interface Traversable {
     target: Reference<Node>,
     options?: TraversalOptions,
   ): TraversalPath;
+
   findShortestPath(
     source: Reference<Node>,
     target: Reference<Node>,

@@ -6,7 +6,6 @@ export {
   isNode,
   Edge,
   isEdge,
-  EntityMap,
   Reference,
   hydrate,
   dehydrate,
@@ -17,5 +16,4 @@ export {
   TargetMap,
 } from './entities/index.js';
 
-
-export { Dictionary } from './interfaces.js';
+export type Dictionary<T = unknown> = NodeJS.Dict<T>;
