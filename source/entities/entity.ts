@@ -81,17 +81,6 @@ export abstract class Entity {
     return r instanceof Entity ? r.id : r;
   }
 
-  /**
-   * Validates Uuid integrity.
-   *
-   * @static
-   * @param {Uuid} id
-   * @returns {boolean}
-   */
-  static checkId(id: Uuid): boolean {
-    return validate(id);
-  }
-
   id: Uuid = Entity.emptyId;
 
   /**

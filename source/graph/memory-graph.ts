@@ -1,13 +1,14 @@
 import is from "@sindresorhus/is";
 import { Edge, isEdge, Entity, Node, isNode } from "..";
-import { EdgeLike, GraphLike, Match, NodeLike, SetLike } from "./interface";
+import { EdgeLike, GraphData, NodeLike, GraphMutable } from "./interface";
+import { Match } from "./match.js";
 import { MatchMaker } from "./match";
 
-export class Graph implements SetLike {
+export class Graph implements GraphData<Entity> {
   protected nodeMap = new Map<string, Node>();
   protected edgeMap = new Map<string, Edge>();
 
-  add(input: Entity | Entity[]): SetLike<Entity> {
+  add(input: Entity | Entity[]): GraphData<Entity> {
     if (!is.array(input)) input = [input];
 
     for (let entity of input) {
@@ -20,7 +21,7 @@ export class Graph implements SetLike {
     return this;
   }
 
-  remove(input: Entity | Entity[]): SetLike<Entity> {
+  remove(input: Entity | Entity[]): GraphData<Entity> {
     if (!is.array(input)) input = [input];
 
     for (let entity of input) {
@@ -33,7 +34,7 @@ export class Graph implements SetLike {
     return this;
   }
 
-  set(input: Entity | Entity[]): SetLike<Entity> {
+  set(input: Entity | Entity[]): GraphData<Entity> {
     if (!is.array(input)) input = [input];
 
     for (let entity of input) {
