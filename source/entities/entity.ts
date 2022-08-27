@@ -1,7 +1,6 @@
 /* eslint-disable import/no-unassigned-import */
 import 'reflect-metadata';
-import { v4 as uuidv4, v5 as uuidv5, NIL as NilUuid, validate } from 'uuid';
-import hash from 'object-hash';
+import is from '@sindresorhus/is';
 import {
   instanceToPlain as dehydrate,
   ClassTransformOptions,
@@ -10,8 +9,8 @@ import {
 import { getProperty, setProperty, hasProperty, deepKeys } from 'dot-prop';
 import { JsonObject } from 'type-fest';
 import { Dictionary } from '../index.js';
+import { Uuid, UuidFactory } from './uuid.js';
 
-export type Uuid = string;
 export type Reference<T extends Entity = Entity> = T | Uuid;
 
 export {
@@ -50,14 +49,7 @@ export abstract class Entity {
    * @static
    * @type {Uuid}
    */
-  static emptyId: Uuid = NilUuid;
-  /**
-   * Unique namespace for Autograph-generated Uuids.
-   *
-   * @static
-   * @type {Uuid}
-   */
-  static namespace: Uuid = '9fc3e7e5-59d7-4d55-afa0-98a978f49bab';
+  static emptyId: Uuid = UuidFactory.nil;
 
   /**
    * Default options for the entity serializer.
@@ -88,39 +80,6 @@ export abstract class Entity {
    */
   static idFromReference(r: Reference): Uuid {
     return r instanceof Entity ? r.id : r;
-  }
-
-  /**
-   * Validates Uuid integrity.
-   *
-   * @static
-   * @param {Uuid} id
-   * @returns {boolean}
-   */
-  static checkId(id: Uuid): boolean {
-    return validate(id);
-  }
-
-  /**
-   * Given an input value, generates a Uuid that serves as a hash for the object. If no input is given, generates a random Uuid.
-   *
-   * @static
-   * @param {?unknown} [hashValue]
-   * @returns {Uuid}
-   */
-  static generateId(hashValue?: unknown): Uuid {
-    if (hashValue) {
-      if (typeof hashValue !== 'object') {
-        hashValue = { data: hashValue };
-      }
-
-      const hashOutput = hash(hashValue as Dictionary, {
-        encoding: 'buffer',
-      });
-      return uuidv5(hashOutput, Entity.namespace);
-    }
-
-    return uuidv4();
   }
 
   id: Uuid = Entity.emptyId;
@@ -185,7 +144,11 @@ export abstract class Entity {
    * @returns {string}
    */
   serialize(): string {
-    return JSON.stringify(dehydrate(this, Entity.getSerializerOptions()));
+    return JSON.stringify(
+      dehydrate(this, Entity.getSerializerOptions()),
+      undefined,
+      0,
+    );
   }
 
   /**
@@ -215,10 +178,14 @@ export abstract class Entity {
    * @protected
    */
   protected assignId(): void {
-    this.id = Entity.generateId(this.getIdSeed());
+    this.id = UuidFactory.generate(this.getIdSeed());
   }
 }
 
 export function isEntity(input: unknown): input is Entity {
   return input instanceof Entity;
+}
+
+export function isEntityData(input: unknown): input is Dictionary {
+  return is.nonEmptyObject(input) && 'id' in input;
 }

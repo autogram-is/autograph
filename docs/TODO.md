@@ -1,14 +1,23 @@
 
-## Improvements to existing components
-- [ ] Generalized traversal functions for edges
-- [ ] Improved load/create mechanics
+## Graph abstraction
+- [x] Composable interface for graph implementations
+- [ ] MVP in-memory/JSON-serialized graph store
+- [x] Move SQLite-backed implementation to separate project
+- [x] SQL-mappable filter functions
 
-## Potential refactoring
-- [ ] Use the Graph instantiation phase to centralize loading/initializing Entity types and Views
-- [ ] Expose Entity and View specific factories and helper functions via the Graph instance
-- [ ] Use decorators to standardize metadata like classname/tablename mapping, etc.
+## Entity Management
+- [ ] Bucket-brigade property mapping to load from JSON
+- [ ] Review constructor/loader and class/class data division of labor
+- [ ] Use decorators to capture class metadata, including:
+  - Type discriminator
+  - Serialization handling
+  - Interface extensions to other classes
 
-## Potential features
-- [ ] Automatic creation/modification timestamps on every entity
-- [ ] Soft deletion managed by the Graph instance
-- [ ] Integrate an existing Cypher parser as an optional node/edge creation mechanism
+## Documentation
+- [ ] Overview docs 
+  - [ ] Entity types
+  - [ ] Graph interfaces
+  - [ ] Predicate/Match system
+  - [ ] Example code
+- [ ] JSDoc for public interfaces and classes
+- [ ] JSDoc for public methods

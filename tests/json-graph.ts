@@ -1,60 +1,61 @@
+import fs from 'node:fs';
+import { URL } from 'node:url';
 import test from 'ava';
-import { Node, Edge } from '../source/index.js';
-import { JsonGraph } from '../source/json-graph.js';
+import { JsonGraph } from '../source/json-graph/index.js';
+import { Node, Edge, isNode } from '../source/index.js';
 
-const j = new JsonGraph();
+const testFile = new URL('fixtures/test.ndjson', import.meta.url);
+let j: JsonGraph;
 
-test('graph population', (t) => {
-  const nodeCount = 100;
-  const edgeCount = 400;
+function randomItem<T>(a: T[]): T {
+  return a[Math.floor(Math.random() * a.length)];
+}
 
-  for (let i = 1; i < nodeCount; i++) {
-    const n = new Node();
-    n.customProperty = Math.random()
-      .toString(36)
-      .replace(/[^a-z]+/g, '')
-      .slice(0, 5);
-    j.set(n);
-  }
-
-  const nodes = [...j.nodes.values()];
-  for (let i = 1; i < edgeCount; i++) {
-    const edge = new Edge(
-      nodes[Math.floor(Math.random() * nodes.length)],
-      'knows_of',
-      nodes[Math.floor(Math.random() * nodes.length)],
-    );
-    j.set(edge);
-  }
-
-  t.assert(j.nodes.size > 0);
-  t.assert(j.edges.size > 0);
+test.before('set up graph', (t) => {
+  j = new JsonGraph();
 });
 
-test('criteria matching', (t) => {
-  const nodeCount = 10;
-  const edgeCount = 20;
-
-  for (let i = 1; i < nodeCount; i++) {
-    const n = new Node();
-    n.customProperty = Math.random()
-      .toString(36)
-      .replace(/[^a-z]+/g, '')
-      .slice(0, 5);
-    j.set(n);
+test.serial('populate', (t) => {
+  const na: Node[] = [];
+  for (let i = 0; i < 10; i++) {
+    na.push(new Node());
   }
 
-  const nodes = [...j.nodes.values()];
-  for (let i = 1; i < edgeCount; i++) {
-    const edge = new Edge(
-      nodes[Math.floor(Math.random() * nodes.length)],
-      'knows_of',
-      nodes[Math.floor(Math.random() * nodes.length)],
-    );
-    j.set(edge);
+  const ea: Edge[] = [];
+  for (let i = 0; i < 50; i++) {
+    ea.push(new Edge(randomItem<Node>(na), 'knows', randomItem<Node>(na)));
   }
 
-  const nid = nodes[0].id;
-  const edges = j.matchEdges({ sourceOrTarget: nid });
-  t.truthy(edges);
+  j.add([...na, ...ea]);
+  t.assert(ea.length === 50);
+  t.is(j.nodeMap.size, na.length);
+  t.assert(j.edgeMap.size > 0);
+});
+
+test.serial('persist', async (t) => {
+  await j.save(testFile);
+  t.assert(fs.statSync(testFile) !== undefined);
+});
+
+test.serial('reload', async (t) => {
+  const j2 = new JsonGraph();
+  await j2.load(testFile);
+
+  t.assert(j2.nodeMap.size > 0);
+  t.assert(j2.edgeMap.size > 0);
+  const n = [...j2.nodeMap.values()][0];
+  t.assert(isNode(n));
+});
+
+test.serial('reload, clone, and merge', async (t) => {
+  const initialCount = j.nodeMap.size;
+
+  const j2 = new JsonGraph();
+  await j2.load(testFile);
+  j2.add(new Node());
+
+  j.add([...j2.nodeMap.values()]);
+  await j.save();
+
+  t.is(initialCount + 1, j.nodeMap.size);
 });

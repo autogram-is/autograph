@@ -2,11 +2,13 @@ export {
   Uuid,
   Entity,
   isEntity,
+  isEntityData,
   Node,
   isNode,
+  isNodeData,
   Edge,
   isEdge,
-  EntityMap,
+  isEdgeData,
   Reference,
   hydrate,
   dehydrate,
@@ -17,13 +19,4 @@ export {
   TargetMap,
 } from './entities/index.js';
 
-export {
-  Graph,
-  GraphData,
-  GraphStorage,
-  NodeSelector,
-  EdgeSelector,
-  JsonGraph,
-} from './graph.js';
-
-export { Dictionary } from './interfaces.js';
+export type Dictionary<T = unknown> = NodeJS.Dict<T>;

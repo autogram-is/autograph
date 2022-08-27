@@ -1,4 +1,41 @@
-# Autogram Autograph
-Minimum viable graph data for node projects.
+# Autograph
 
-Instantiate a new graph, populate it with nodes and edges. Stick arbitrary properties on your objects, or add subclasses to enforce rules for specific edge and node types. Save the whole thing to a JSON file and reload it — or swap in a beefier persistence mechanism to leverage a database server or Real Graph Database™.
+TLDR: Strongly typed but schema-light JSON documents in a [directed multigraph with distinct edge identities](https://en.wikipedia.org/wiki/Multigraph#Directed_multigraph_(edges_with_own_identity)).
+
+It's a very specific niche, but you might try Autograph if you need to:
+
+1. Store lots of evolving data about a medium number of nodes (1K-100K of JSON per 500-50K nodes)
+2. Store many metadata-rich relationships (1-5k of JSON per 5K-5M edges)
+3. Switch up storage as your needs evolve (use serialized JSON files, then SQLite, then Couch or Redis, etc.)
+
+## Adding data
+```
+import { Node, Edge, JsonGraph as Graph } from '@autogram/autograph';
+
+const n1 = new Node();
+n1.someData = Api.getData(value1);
+
+const n2 = new Node();
+n2.random = Math.random();
+n2.otherData = AnotherApi.getData(value1);
+
+const e = new Edge(n1, 'links_to', n2);
+
+const g = new Graph()
+  .add([n1, n2, e])
+  .save('my_graph.json');
+```
+
+## Manual traversal
+```
+const g = new Graph().load('extended_family.json');
+const livingSiblings = g
+  .nodes(['type', 'equals', 'person'])
+  .outgoing(['predicate', 'equals', 'is_child_of'])
+  .sources(['deathDate', 'undefined'])
+  .map((n: Node) => console.log(n.firstName));
+
+const g2 = new Graph()
+  .add(livingSiblings)
+  .save('siblings.json');
+```
