@@ -46,3 +46,16 @@ test.serial('reload', async (t) => {
   const n = [...j2.nodeMap.values()][0];
   t.assert(isNode(n));
 });
+
+test.serial('reload, clone, and merge', async (t) => {
+  const initialCount = j.nodeMap.size;
+
+  const j2 = new JsonGraph();
+  await j2.load(testFile);
+  j2.add(new Node());
+  
+  j.add([...j2.nodeMap.values()]);
+  await j.save();
+
+  t.is(initialCount + 1, j.nodeMap.size);
+});
