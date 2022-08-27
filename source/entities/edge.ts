@@ -1,6 +1,13 @@
+import is from '@sindresorhus/is';
 import { Dictionary } from '../index.js';
 import { Uuid } from './uuid.js';
-import { Entity, Reference, hydrate, ClassConstructor } from './entity.js';
+import {
+  Entity,
+  isEntityData,
+  Reference,
+  hydrate,
+  ClassConstructor,
+} from './entity.js';
 import { Node } from './node.js';
 
 export class Edge extends Entity {
@@ -50,4 +57,8 @@ export class Edge extends Entity {
 
 export function isEdge(input: unknown): input is Edge {
   return input instanceof Node;
+}
+
+export function isEdgeData(input: unknown): input is Dictionary {
+  return is.nonEmptyObject(input) && 'predicate' in input;
 }

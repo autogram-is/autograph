@@ -9,9 +9,9 @@ type Flavor<T, FlavorT> = T & Flavoring<FlavorT>;
 
 export type Uuid = Flavor<string, 'uuid'>;
 
-export class UuidFactory {
-  static namespace: Uuid = '9fc3e7e5-59d7-4d55-afa0-98a978f49bab';
-  static nil: Uuid = NilUuid;
+export const UuidFactory = {
+  namespace: '9fc3e7e5-59d7-4d55-afa0-98a978f49bab' as Uuid,
+  nil: NilUuid as Uuid,
 
   /**
    * Given an input value, generates a Uuid that serves as a hash for the object.
@@ -21,7 +21,7 @@ export class UuidFactory {
    * @param {?unknown} [hashValue]
    * @returns {Uuid}
    */
-  static generate(hashValue?: unknown): Uuid {
+  generate(hashValue?: unknown): Uuid {
     if (hashValue) {
       if (!is.object(hashValue)) {
         hashValue = { data: hashValue };
@@ -34,9 +34,9 @@ export class UuidFactory {
     }
 
     return uuidv4() as Uuid;
-  }
+  },
 
-  static isUuid(input: string): input is Uuid {
+  isUuid(input: string): input is Uuid {
     return validate(input);
-  }
-}
+  },
+};

@@ -1,5 +1,6 @@
 /* eslint-disable import/no-unassigned-import */
 import 'reflect-metadata';
+import is from '@sindresorhus/is';
 import {
   instanceToPlain as dehydrate,
   ClassTransformOptions,
@@ -179,4 +180,8 @@ export abstract class Entity {
 
 export function isEntity(input: unknown): input is Entity {
   return input instanceof Entity;
+}
+
+export function isEntityData(input: unknown): input is Dictionary {
+  return is.nonEmptyObject(input) && 'id' in input;
 }

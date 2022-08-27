@@ -3,6 +3,7 @@ export {
   EntityFilter,
   Entity,
   isEntity,
+  isEntityData,
   Reference,
   hydrate,
   dehydrate,
@@ -12,5 +13,5 @@ export {
   ClassTransformOptions,
   TargetMap,
 } from './entity.js';
-export { Node, isNode } from './node.js';
-export { Edge, isEdge } from './edge.js';
+export { Node, isNode, isNodeData } from './node.js';
+export { Edge, isEdge, isEdgeData } from './edge.js';

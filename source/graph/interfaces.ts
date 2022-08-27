@@ -3,9 +3,27 @@ import { Match } from './match.js';
 
 export type EntityFilter<T extends Entity = Entity> = (entity: T) => boolean;
 
+export interface Graph {
+  nodes: NodeSet;
+  edges: NodeSet;
+}
+
+export interface NodeSet<T extends Node = Node> {
+  edges(...criteria: Array<Match<T>>): EdgeSet;
+  outgoing(...criteria: Array<Match<T>>): EdgeSet;
+  incoming(...criteria: Array<Match<T>>): EdgeSet;
+  siblings(...criteria: Array<Match<T>>): NodeSet;
+}
+
+export interface EdgeSet<T extends Edge = Edge> {
+  nodes(...criteria: Array<Match<T>>): NodeSet;
+  sources(...criteria: Array<Match<T>>): NodeSet;
+  targets(...criteria: Array<Match<T>>): NodeSet;
+}
+
 export interface Persistable {
-  save(): boolean;
-  load(): boolean;
+  load(...args: unknown[]): Promise<void>;
+  save(...args: unknown[]): Promise<void>;
 }
 
 export interface Readable<T extends Entity = Entity> {
@@ -23,19 +41,6 @@ export interface Searchable<T extends Entity = Entity> {
   find(...criteria: Array<Match<T>>): T | undefined;
   match(...criteria: Array<Match<T>>): Searchable<T> | undefined;
   count(...criteria: Array<Match<T>>): number;
-}
-
-export interface NodeLike<T extends Node = Node> {
-  edges(...criteria: Array<Match<T>>): EdgeLike;
-  outgoing(...criteria: Array<Match<T>>): EdgeLike;
-  incoming(...criteria: Array<Match<T>>): EdgeLike;
-  siblings(...criteria: Array<Match<T>>): NodeLike;
-}
-
-export interface EdgeLike<T extends Edge = Edge> {
-  nodes(...criteria: Array<Match<T>>): NodeLike;
-  sources(...criteria: Array<Match<T>>): NodeLike;
-  targets(...criteria: Array<Match<T>>): NodeLike;
 }
 
 export type TraversalCost = (

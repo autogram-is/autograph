@@ -1,7 +1,11 @@
 export {
+  Graph,
+  Readable,
+  Searchable,
+  Mutable,
   Persistable,
-  NodeLike,
-  EdgeLike,
+  NodeSet,
+  EdgeSet,
   TraversalCost,
   TraversalOptions,
   Traversable,

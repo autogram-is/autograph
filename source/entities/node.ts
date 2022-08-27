@@ -1,6 +1,8 @@
+import is from '@sindresorhus/is';
 import { Dictionary } from '../index.js';
 import {
   Entity,
+  isEntityData,
   Transform,
   Type,
   hydrate,
@@ -88,4 +90,8 @@ export class Node extends Entity {
 
 export function isNode(input: unknown): input is Node {
   return input instanceof Node;
+}
+
+export function isNodeData(input: unknown): input is Dictionary {
+  return isEntityData(input) && 'type' in input;
 }

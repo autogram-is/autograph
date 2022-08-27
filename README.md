@@ -9,7 +9,6 @@ It's a very specific niche, but you might try Autograph if you need to:
 3. Switch up storage as your needs evolve (use serialized JSON files, then SQLite, then Couch or Redis, etc.)
 
 ## Adding data
-
 ```
 import { Node, Edge, JsonGraph as Graph } from '@autogram/autograph';
 
@@ -27,12 +26,16 @@ const g = new Graph()
   .save('my_graph.json');
 ```
 
-## Simple traversal
+## Manual traversal
 ```
-const g = new Graph().load('my_graph.json');
+const g = new Graph().load('extended_family.json');
 const livingSiblings = g
   .nodes(['type', 'equals', 'person'])
-  .siblings(['predicate', 'equals', 'is_child_of'])
-  .match(['deathDate', 'undefined'])
+  .outgoing(['predicate', 'equals', 'is_child_of'])
+  .sources(['deathDate', 'undefined'])
   .map((n: Node) => console.log(n.firstName));
+
+const g2 = new Graph()
+  .add(livingSiblings)
+  .save('siblings.json');
 ```
