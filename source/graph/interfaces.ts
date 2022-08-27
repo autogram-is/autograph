@@ -12,7 +12,6 @@ export interface NodeSet<T extends Node = Node> {
   edges(...criteria: Array<Match<T>>): EdgeSet;
   outgoing(...criteria: Array<Match<T>>): EdgeSet;
   incoming(...criteria: Array<Match<T>>): EdgeSet;
-  siblings(...criteria: Array<Match<T>>): NodeSet;
 }
 
 export interface EdgeSet<T extends Edge = Edge> {

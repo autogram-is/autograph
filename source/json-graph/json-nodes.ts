@@ -28,8 +28,4 @@ export class JsonNodes extends JsonEntities<Node> implements NodeSet {
   incoming(...criteria: Array<Match<Node>>): JsonEdges {
     return this.graph.edges(where('target', 'in', this.ids()));
   }
-
-  siblings(...criteria: Array<Match<Node>>): JsonNodes {
-    throw new Error('Method not implemented.');
-  }
 }
