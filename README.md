@@ -8,7 +8,7 @@ It's a very specific niche, but you might try Autograph if you need to:
 2. Store many metadata-rich relationships (1-5k of JSON per 5K-5M edges)
 3. Switch up storage as your needs evolve (use serialized JSON files, then SQLite, then Couch or Redis, etc.)
 
-## Adding population
+## Adding data
 
 ```
 import { Node, Edge, JsonGraph as Graph } from '@autogram/autograph';
