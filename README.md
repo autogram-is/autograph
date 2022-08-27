@@ -1,6 +1,6 @@
 # Autograph
 
-TLDR: Strongly typed but schema-light JSON documents in a [directed multigraph with distinct edge identities](https://en.wikipedia.org/wiki/Multigraph#Directed_multigraph_(edges_with_own_identity).
+TLDR: Strongly typed but schema-light JSON documents in a [directed multigraph with distinct edge identities](https://en.wikipedia.org/wiki/Multigraph#Directed_multigraph_(edges_with_own_identity)).
 
 It's a very specific niche, but you might try Autograph if you need to:
 
