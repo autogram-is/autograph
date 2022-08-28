@@ -1,4 +1,4 @@
-import { Node } from '../index.js';
+import { Node } from '../entities/index.js';
 import { NodeSet } from '../graph/interfaces.js';
 import { Match, MatchMaker } from '../graph/match.js';
 import { where } from '../graph/predicate.js';

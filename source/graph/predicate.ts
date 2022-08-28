@@ -1,5 +1,5 @@
 import is from '@sindresorhus/is';
-import { Entity } from '../index.js';
+import { Entity } from '../entities/index.js';
 
 export type PredicateStructure = [
   property: string,

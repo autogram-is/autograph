@@ -1,4 +1,4 @@
-import { Entity, Reference, Uuid } from '../index.js';
+import { Entity, Reference, Uuid } from '../entities/index.js';
 import { Readable, Searchable } from '../graph/interfaces.js';
 import { Match, MatchMaker } from '../graph/match.js';
 import { JsonGraph } from './json-graph.js';

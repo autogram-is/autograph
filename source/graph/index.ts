@@ -13,4 +13,4 @@ export {
 
 export { Match, MatchMaker } from './match.js';
 
-export { Predicate } from './predicate.js';
+export { Predicate, where } from './predicate.js';

@@ -1,4 +1,4 @@
-import { Edge, Uuid } from '../index.js';
+import { Edge, Uuid } from '../entities/index.js';
 import { EdgeSet } from '../graph/interfaces.js';
 import { Match, MatchMaker } from '../graph/match.js';
 import { where } from '../graph/predicate.js';
