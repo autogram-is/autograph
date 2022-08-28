@@ -145,7 +145,7 @@ export abstract class Entity {
    */
   serialize(): string {
     return JSON.stringify(
-      dehydrate(this, Entity.getSerializerOptions()),
+      this.toJSON(),
       undefined,
       0,
     );
