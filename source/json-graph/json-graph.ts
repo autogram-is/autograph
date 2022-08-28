@@ -1,7 +1,7 @@
-import { Dictionary } from '../index.js';
 import { createReadStream, createWriteStream, PathLike } from 'node:fs';
 import is from '@sindresorhus/is';
 import ndjson from 'ndjson';
+import { Dictionary } from '../index.js';
 import {
   Edge,
   isEdge,
