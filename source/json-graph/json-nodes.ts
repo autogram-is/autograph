@@ -1,12 +1,12 @@
 import { Node } from '../index.js';
-import { NodeSet } from '../graph/interfaces.js';
+import { NodeSet, EdgeSet } from '../graph/interfaces.js';
 import { Match, MatchMaker } from '../graph/match.js';
 import { where } from '../graph/predicate.js';
 import { JsonEntities } from './json-entities.js';
 import { JsonEdges } from './json-edges.js';
 
 export class JsonNodes extends JsonEntities<Node> implements NodeSet {
-  filter(...criteria: Array<Match<Node>>): JsonNodes {
+  filter(...criteria: Array<Match<Node>>): NodeSet {
     const m = new MatchMaker<Node>(criteria);
     const results = [...this.internalMap.values()].filter((input) =>
       m.match(input),
@@ -14,18 +14,18 @@ export class JsonNodes extends JsonEntities<Node> implements NodeSet {
     return new JsonNodes(this.graph, results);
   }
 
-  edges(...criteria: Array<Match<Node>>): JsonEdges {
+  edges(...criteria: Array<Match<Node>>): EdgeSet {
     return new JsonEdges(this.graph, [
       ...this.incoming(...criteria),
       ...this.outgoing(...criteria),
     ]);
   }
 
-  outgoing(...criteria: Array<Match<Node>>): JsonEdges {
+  outgoing(...criteria: Array<Match<Node>>): EdgeSet {
     return this.graph.edges(where('source', 'in', this.ids()));
   }
 
-  incoming(...criteria: Array<Match<Node>>): JsonEdges {
+  incoming(...criteria: Array<Match<Node>>): EdgeSet {
     return this.graph.edges(where('target', 'in', this.ids()));
   }
 }

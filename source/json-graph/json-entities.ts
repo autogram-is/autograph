@@ -1,14 +1,11 @@
 import { Entity, Reference, Uuid } from '../index.js';
-import { Readable, Searchable } from '../graph/interfaces.js';
+import { EntitySet, Graph, Readable, Searchable } from '../graph/interfaces.js';
 import { Match, MatchMaker } from '../graph/match.js';
-import { JsonGraph } from './json-graph.js';
 
-export abstract class JsonEntities<T extends Entity>
-  implements Readable<T>, Searchable<T>, IterableIterator<T>
-{
+export abstract class JsonEntities<T extends Entity> implements EntitySet<T> {
   protected internalMap: Map<Uuid, T>;
 
-  constructor(protected graph: JsonGraph, incoming: T[] = []) {
+  constructor(protected graph: Graph, incoming: T[] = []) {
     this.internalMap = new Map<Uuid, T>(incoming.map((i) => [i.id, i]));
   }
 
@@ -47,5 +44,5 @@ export abstract class JsonEntities<T extends Entity>
       .length;
   }
 
-  abstract filter(...criteria: Array<Match<T>>): JsonEntities<T>;
+  abstract filter(...criteria: Array<Match<T>>): EntitySet<T>;
 }
