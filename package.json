@@ -1,6 +1,6 @@
 {
   "name": "@autogram/autograph",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Strongly typed graphlike storage for arbitrary data.",
   "exports": "./dist/source/index.js",
   "types": "./dist/source/index.d.ts",
