@@ -130,7 +130,7 @@ export class JsonGraph implements Readable, Mutable, Persistable, Graph {
     return this;
   }
 
-  remove(input: Entity | Entity[]): this {
+  remove(input: Entity | Entity[], cascade?: true): this {
     if (!is.array(input)) input = [input];
 
     for (const entity of input) {

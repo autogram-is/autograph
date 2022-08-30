@@ -36,7 +36,7 @@ export interface Readable<T extends Entity = Entity> {
 
 export interface Mutable<T extends Entity = Entity> {
   add(input: Entity | Entity[]): Mutable<T>;
-  remove(input: Reference | Reference[]): Mutable<T>;
+  remove(input: Reference | Reference[], cascade?: true): Mutable<T>;
   set(input: Entity | Entity[]): Mutable<T>;
 }
 
