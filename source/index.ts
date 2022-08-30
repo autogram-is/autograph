@@ -1,5 +1,6 @@
 export {
   Uuid,
+  UuidFactory,
   Entity,
   isEntity,
   isEntityData,
@@ -18,5 +19,24 @@ export {
   ClassTransformOptions,
   TargetMap,
 } from './entities/index.js';
+
+export {
+  Graph,
+  Readable,
+  Searchable,
+  Mutable,
+  Persistable,
+  NodeSet,
+  EdgeSet,
+  TraversalCost,
+  TraversalOptions,
+  Traversable,
+  Match,
+  MatchMaker,
+  Predicate,
+  Operator,
+  PredicateStructure,
+  PredicateValue
+} from './graph/index.js';
 
 export type Dictionary<T = unknown> = NodeJS.Dict<T>;
