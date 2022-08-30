@@ -24,6 +24,8 @@ export class JsonGraph implements Readable, Mutable, Persistable, Graph {
   readonly nodeMap = new Map<string, Node>();
   readonly edgeMap = new Map<string, Edge>();
 
+  /* Graph methods */
+
   nodes(...criteria: Array<Match<Node>>): JsonNodes {
     const m = new MatchMaker<Node>(criteria);
     const results = [...this.nodeMap.values()].filter((input) =>
@@ -39,6 +41,8 @@ export class JsonGraph implements Readable, Mutable, Persistable, Graph {
     );
     return new JsonEdges(this, results);
   }
+
+  /* Persistable methods */
 
   async load(filePath: PathLike): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -99,6 +103,8 @@ export class JsonGraph implements Readable, Mutable, Persistable, Graph {
     });
   }
 
+  /* Readable methods */
+
   has(input: Reference): boolean {
     const id = Entity.idFromReference(input);
     return this.nodeMap.has(id) ?? this.edgeMap.has(id);
@@ -108,6 +114,8 @@ export class JsonGraph implements Readable, Mutable, Persistable, Graph {
     const id = Entity.idFromReference(input);
     return this.nodeMap.get(id) ?? this.edgeMap.get(id);
   }
+
+  /* Mutable methods */
 
   add(input: Entity | Entity[]): this {
     if (!is.array(input)) input = [input];
