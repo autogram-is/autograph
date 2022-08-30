@@ -1,3 +1,5 @@
+export type Dictionary<T = unknown> = NodeJS.Dict<T>;
+
 export {
   Uuid,
   UuidFactory,
@@ -36,7 +38,6 @@ export {
   Predicate,
   Operator,
   PredicateStructure,
-  PredicateValue
+  PredicateValue,
+  where
 } from './graph/index.js';
-
-export type Dictionary<T = unknown> = NodeJS.Dict<T>;
