@@ -42,3 +42,9 @@ export {
   PredicateValue,
   where
 } from './graph/index.js';
+
+export {
+  JsonGraph,
+  JsonNodes,
+  JsonEdges
+} from './json-graph/index.js'
