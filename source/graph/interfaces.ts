@@ -3,18 +3,22 @@ import { Match } from './match.js';
 
 export type EntityFilter<T extends Entity = Entity> = (entity: T) => boolean;
 
-export interface Graph {
+export interface Graph extends Readable, Mutable {
   nodes(...criteria: Array<Match<Node>>): NodeSet;
   edges(...criteria: Array<Match<Edge>>): EdgeSet;
 }
 
-export interface NodeSet<T extends Node = Node> {
+export interface EntitySet<T extends Entity = Entity>
+  extends Readable<T>,
+    Searchable<T>,
+    IterableIterator<T> {}
+export interface NodeSet<T extends Node = Node> extends EntitySet<T> {
   edges(...criteria: Array<Match<T>>): EdgeSet;
   outbound(...criteria: Array<Match<T>>): EdgeSet;
   inbound(...criteria: Array<Match<T>>): EdgeSet;
 }
 
-export interface EdgeSet<T extends Edge = Edge> {
+export interface EdgeSet<T extends Edge = Edge> extends EntitySet<T> {
   nodes(...criteria: Array<Match<T>>): NodeSet;
   sources(...criteria: Array<Match<T>>): NodeSet;
   targets(...criteria: Array<Match<T>>): NodeSet;
@@ -32,7 +36,7 @@ export interface Readable<T extends Entity = Entity> {
 
 export interface Mutable<T extends Entity = Entity> {
   add(input: Entity | Entity[]): Mutable<T>;
-  remove(input: Reference | Reference[]): Mutable<T>;
+  remove(input: Reference | Reference[], cascade?: true): Mutable<T>;
   set(input: Entity | Entity[]): Mutable<T>;
 }
 

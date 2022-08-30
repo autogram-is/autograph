@@ -3,8 +3,8 @@ export type Dictionary<T = unknown> = NodeJS.Dict<T>;
 export {
   Uuid,
   UuidFactory,
-  EntityFilter,
   Entity,
+  EntityFilter,
   isEntity,
   isEntityData,
   Reference,
@@ -37,7 +37,8 @@ export {
   Match,
   MatchMaker,
   Predicate,
-  where,
+  Operator,
+  PredicateStructure,
+  PredicateValue,
+  where
 } from './graph/index.js';
-
-export { JsonGraph, JsonNodes, JsonEdges } from './json-graph/index.js';
