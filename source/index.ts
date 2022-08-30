@@ -4,14 +4,9 @@ export {
   Uuid,
   UuidFactory,
   Entity,
+  EntityFilter,
   isEntity,
   isEntityData,
-  Node,
-  isNode,
-  isNodeData,
-  Edge,
-  isEdge,
-  isEdgeData,
   Reference,
   hydrate,
   dehydrate,
@@ -20,6 +15,12 @@ export {
   ClassConstructor,
   ClassTransformOptions,
   TargetMap,
+  Node,
+  isNode,
+  isNodeData,
+  Edge,
+  isEdge,
+  isEdgeData,
 } from './entities/index.js';
 
 export {

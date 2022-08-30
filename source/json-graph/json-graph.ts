@@ -1,8 +1,8 @@
 import { createReadStream, createWriteStream, PathLike } from 'node:fs';
 import is from '@sindresorhus/is';
 import ndjson from 'ndjson';
+import { Dictionary } from '../index.js';
 import {
-  Dictionary,
   Edge,
   isEdge,
   isEdgeData,
@@ -12,7 +12,7 @@ import {
   isNodeData,
   Reference,
   Uuid,
-} from '../index.js';
+} from '../entities/index.js';
 import { Mutable, Persistable, Readable, Graph } from '../graph/interfaces.js';
 import { Match, MatchMaker } from '../graph/match.js';
 import { JsonNodes } from './json-nodes.js';

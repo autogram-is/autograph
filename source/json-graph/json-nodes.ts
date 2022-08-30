@@ -1,5 +1,5 @@
-import { Node } from '../index.js';
 import { NodeSet, EdgeSet } from '../graph/interfaces.js';
+import { Node } from '../entities/index.js';
 import { Match, MatchMaker } from '../graph/match.js';
 import { where } from '../graph/predicate.js';
 import { JsonEntities } from './json-entities.js';
@@ -16,16 +16,16 @@ export class JsonNodes extends JsonEntities<Node> implements NodeSet {
 
   edges(...criteria: Array<Match<Node>>): EdgeSet {
     return new JsonEdges(this.graph, [
-      ...this.incoming(...criteria),
-      ...this.outgoing(...criteria),
+      ...this.inbound(...criteria),
+      ...this.outbound(...criteria),
     ]);
   }
 
-  outgoing(...criteria: Array<Match<Node>>): EdgeSet {
+  outbound(...criteria: Array<Match<Node>>): EdgeSet {
     return this.graph.edges(where('source', 'in', this.ids()));
   }
 
-  incoming(...criteria: Array<Match<Node>>): EdgeSet {
+  inbound(...criteria: Array<Match<Node>>): EdgeSet {
     return this.graph.edges(where('target', 'in', this.ids()));
   }
 }

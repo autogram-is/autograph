@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import { URL } from 'node:url';
 import test from 'ava';
 import { JsonGraph } from '../source/json-graph/index.js';
-import { Node, Edge, isNode } from '../source/index.js';
+import { Node, Edge, isNode } from '../source/entities/index.js';
 
 const testFile = new URL('fixtures/test.ndjson', import.meta.url);
 let j: JsonGraph;
