@@ -2,7 +2,7 @@ import is from '@sindresorhus/is';
 import { Entity } from '../entities/index.js';
 
 export interface PredicateComparisons {
-  [keyof: string]: unknown;
+  [keyof: string]: PredicateValue | PredicateValue[] | undefined;
   eq?: string | number | boolean;
   gt?: number;
   gte?: number;
@@ -47,7 +47,20 @@ export class Predicate {
   ) {}
 
   match(input: Entity): boolean {
-    let matches = false;
+    let aggregateResult: boolean;
+    switch (this.mode) {
+      case 'any':
+        aggregateResult = false;
+        break;
+      case 'none':
+        aggregateResult = true;
+        break;
+      default: // 'all'
+        aggregateResult = true;
+        break;
+    }
+
+    const value = input.get(this.propertyName);
 
     for (const operator in this.comparisons) {
       const func = predicateFunctions[operator];
@@ -55,13 +68,24 @@ export class Predicate {
         throw new Error(`Unknown operator '${operator}'`);
       }
 
-      matches &&= func(
-        input.get(this.propertyName),
-        this.comparisons[operator],
-      );
+      const compare = this.comparisons[operator];
+
+      console.log(value, operator, compare);
+
+      switch (this.mode) {
+        case 'any':
+          if (func(value, compare)) return true;
+          break;
+        case 'none':
+          if (func(value, compare)) return false;
+          break;
+        default: // 'all'
+          if (!func(value, compare)) return false;
+          break;
+      }
     }
 
-    return matches;
+    return aggregateResult;
   }
 }
 
@@ -127,14 +151,15 @@ const predicateFunctions: Record<string, PredicateFunction> = {
   },
 
   has(input: unknown, compare: unknown): boolean {
+    if (is.set(input)) input = [...input];
     if (!is.array(input) || !(is.string(compare) || is.number(compare)))
       return false;
     if (is.string(compare) && is.arrayLike<string>(input)) {
-      return input.includes(compare);
+      return [...input].includes(compare);
     }
 
     if (is.number(compare) && is.arrayLike<number>(input)) {
-      return input.includes(compare);
+      return [...input].includes(compare);
     }
 
     return false;
