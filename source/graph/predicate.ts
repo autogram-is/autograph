@@ -70,8 +70,6 @@ export class Predicate {
 
       const compare = this.comparisons[operator];
 
-      console.log(value, operator, compare);
-
       switch (this.mode) {
         case 'any':
           if (func(value, compare)) return true;
