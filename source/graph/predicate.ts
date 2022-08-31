@@ -50,11 +50,12 @@ export class Predicate {
     let matches = false;
 
     for (const operator in this.comparisons) {
-      if (operator in predicateFunctions) {
+      const func = predicateFunctions[operator];
+      if (is.undefined(func)) {
         throw new Error(`Unknown operator '${operator}'`);
       }
 
-      matches &&= predicateFunctions[operator](
+      matches &&= func(
         input.get(this.propertyName),
         this.comparisons[operator],
       );
