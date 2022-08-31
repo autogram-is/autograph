@@ -1,6 +1,6 @@
 import { JsonGraph } from '../../source/json-graph/index.js';
-import { Scion, Parent } from './scion.js';
 import { where } from '../../source/index.js';
+import { Scion, Parent } from './scion.js';
 
 (async () => {
   const testFile = new URL('hapsburgs.ndjson', import.meta.url);
@@ -8,14 +8,17 @@ import { where } from '../../source/index.js';
   await json.load(testFile);
 
   const kidsOfEmperors = json
-    .nodes(where('title', {eq: 'Holy Roman Emperor'}))
+    .nodes(where('title', { eq: 'Holy Roman Emperor' }))
     .outbound(where('predicate', { eq: 'is_parent_of' }))
     .targets();
 
-  for (let kid of kidsOfEmperors) {
+  for (const kid of kidsOfEmperors) {
     if (kid instanceof Scion) {
-      console.log(`${kid.name}, ${kid.title} (${kid.birth}–${kid.death})`);
+      console.log(
+        `${kid.name}, ${kid.title ?? ''} (${kid.birth ?? 0}-${kid.death ?? 0})`,
+      );
     }
   }
+
   console.log();
-})()
+})();

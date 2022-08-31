@@ -40,11 +40,8 @@ export {
   PredicateComparisons,
   PredicateStruct,
   PredicateTuple,
-  where
+  PredicateCombination,
+  where,
 } from './graph/index.js';
 
-export {
-  JsonGraph,
-  JsonNodes,
-  JsonEdges
-} from './json-graph/index.js'
+export { JsonGraph, JsonNodes, JsonEdges } from './json-graph/index.js';

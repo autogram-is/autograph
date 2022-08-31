@@ -27,7 +27,7 @@ export class JsonEdges extends JsonEntities<Edge> implements EdgeSet {
       sourceIds.add(edge.source);
     }
 
-    return this.graph.nodes(where('id', {in: [...sourceIds.values()]}));
+    return this.graph.nodes(where('id', { in: [...sourceIds.values()] }));
   }
 
   targets(...criteria: Array<Match<Edge>>): NodeSet {
@@ -36,6 +36,6 @@ export class JsonEdges extends JsonEntities<Edge> implements EdgeSet {
       targetIds.add(edge.target);
     }
 
-    return this.graph.nodes(where('id', {in: [...targetIds.values()]}));
+    return this.graph.nodes(where('id', { in: [...targetIds.values()] }));
   }
 }

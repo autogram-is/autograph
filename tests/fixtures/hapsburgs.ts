@@ -1,6 +1,6 @@
 import { JsonGraph } from '../../source/json-graph/index.js';
-import { Scion, Parent } from './scion.js';
 import { Dictionary } from '../../source/index.js';
+import { Scion, Parent } from './scion.js';
 
 const json = new JsonGraph();
 
@@ -54,19 +54,34 @@ const haps = {
   charlesph: new Scion('Charles', 1590, 1624, 'of Austria, the Posthumous'),
   philipiv: new Scion('Philip IV', 1605, 1665, 'of Spain'),
   charlesa: new Scion('Charles', 1607, 1632, 'of Austria'),
-  ferdinand: new Scion('Ferdinand', 1609/10, 1641, 'of Austria'),
+  ferdinand: new Scion('Ferdinand', 1609 / 10, 1641, 'of Austria'),
   ferdinandiii: new Scion('Ferdinand III', 1608, 1657, 'Holy Roman Emperor'),
   leopoldwilhelm: new Scion('Leopold Wilhelm', 1614, 1662, 'of Austria'),
-  ferdinandcharles: new Scion('Ferdinand Charles', 1628, 1662, 'Archduke of Austria'),
-  sigismundfrancis: new Scion('Sigismund Francis', 1630, 1665, 'Archduke of Austria'),
-  balthasarcharles: new Scion('Balthasar Charles', 1629, 1646, 'Prince of Asturias'),
+  ferdinandcharles: new Scion(
+    'Ferdinand Charles',
+    1628,
+    1662,
+    'Archduke of Austria',
+  ),
+  sigismundfrancis: new Scion(
+    'Sigismund Francis',
+    1630,
+    1665,
+    'Archduke of Austria',
+  ),
+  balthasarcharles: new Scion(
+    'Balthasar Charles',
+    1629,
+    1646,
+    'Prince of Asturias',
+  ),
   charlesiis: new Scion('Charles II', 1661, 1700, 'of Spain'),
   ferdinandiv: new Scion('Ferdinand IV', 1633, 1654, 'King of the Romans'),
   leopoldih: new Scion('Leopold I', 1640, 1705, 'Holy Roman Emperor'),
   charlesjoseph: new Scion('Charles Joseph', 1649, 1664, 'of Austria'),
   josephi: new Scion('Joseph I', 1678, 1711, 'Holy Roman Emperor'),
-  charlesvi: new Scion('Charles VI', 1685, 1740, 'Holy Roman Emperor') 
-}
+  charlesvi: new Scion('Charles VI', 1685, 1740, 'Holy Roman Emperor'),
+};
 
 const parentage: Parent[] = [
   new Parent(haps.rudolfi, haps.alberti),
@@ -121,7 +136,7 @@ const parentage: Parent[] = [
 
   new Parent(haps.philipii, haps.carlos),
   new Parent(haps.philipii, haps.philipiii),
-  
+
   new Parent(haps.maximilianii, haps.rudolfiih),
   new Parent(haps.maximilianii, haps.ernesta),
   new Parent(haps.maximilianii, haps.matthias),
