@@ -22,10 +22,10 @@ export class JsonNodes extends JsonEntities<Node> implements NodeSet {
   }
 
   outbound(...criteria: Array<Match<Node>>): EdgeSet {
-    return this.graph.edges(where('source', 'in', this.ids()));
+    return this.graph.edges(where('source', { in: this.ids() }));
   }
 
   inbound(...criteria: Array<Match<Node>>): EdgeSet {
-    return this.graph.edges(where('target', 'in', this.ids()));
+    return this.graph.edges(where('target', { in: this.ids() }));
   }
 }

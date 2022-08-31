@@ -8,8 +8,8 @@ import { where } from '../../source/index.js';
   await json.load(testFile);
 
   const kidsOfEmperors = json
-    .nodes(where('title', 'equals', 'Holy Roman Emperor'))
-    .outbound(where('predicate', 'equals', 'is_parent_of'))
+    .nodes(where('title', {eq: 'Holy Roman Emperor'}))
+    .outbound(where('predicate', { eq: 'is_parent_of' }))
     .targets();
 
   for (let kid of kidsOfEmperors) {

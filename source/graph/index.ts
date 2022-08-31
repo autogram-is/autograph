@@ -15,8 +15,8 @@ export { Match, MatchMaker } from './match.js';
 
 export {
   Predicate,
-  Operator,
-  PredicateStructure,
-  PredicateValue,
+  PredicateComparisons,
+  PredicateStruct,
+  PredicateTuple,
   where,
 } from './predicate.js';

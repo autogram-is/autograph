@@ -37,9 +37,9 @@ export {
   Match,
   MatchMaker,
   Predicate,
-  Operator,
-  PredicateStructure,
-  PredicateValue,
+  PredicateComparisons,
+  PredicateStruct,
+  PredicateTuple,
   where
 } from './graph/index.js';
 
