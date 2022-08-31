@@ -169,5 +169,5 @@ const parentage: Parent[] = [
 json.add([...Object.values(haps), ...parentage]);
 
 (async () => {
-  json.save('./hapsburgs.ndjson');
+  await json.save('./hapsburgs.ndjson');
 })();

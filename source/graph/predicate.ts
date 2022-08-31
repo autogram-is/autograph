@@ -30,9 +30,12 @@ export type PredicateTuple = [
   mode?: PredicateMode,
 ];
 
+type PredicateFunction = (input: unknown, compare: unknown) => boolean;
+const defaultPredicateComparison = { exists: true };
+
 export const where = (
   property: string,
-  comparisons: PredicateComparisons = { exists: true },
+  comparisons: PredicateComparisons = defaultPredicateComparison,
   mode: PredicateMode = 'all',
 ): Predicate => new Predicate(property, comparisons, mode);
 
@@ -61,85 +64,103 @@ export class Predicate {
   }
 }
 
-const predicateFunctions: Record<string, Function> = {
-  eq(input: unknown, compare: string | number | boolean): boolean {
+const predicateFunctions: Record<string, PredicateFunction> = {
+  eq(input: unknown, compare: unknown): boolean {
+    if (!(is.number(compare) || is.string(compare) || is.boolean(compare)))
+      return false;
     if (is.numericString(input) && is.number(compare)) input = Number(input);
     return input === compare;
   },
 
-  gt(input: unknown, compare: number): boolean {
+  gt(input: unknown, compare: unknown): boolean {
+    if (!is.number(compare)) return false;
     if (is.numericString(input)) input = Number(input);
     if (is.number(input)) {
       return input > compare;
     }
+
     return false;
   },
 
-  gte(input: unknown, compare: number): boolean {
+  gte(input: unknown, compare: unknown): boolean {
+    if (!is.number(compare)) return false;
     if (is.numericString(input)) input = Number(input);
     if (is.number(input)) {
       return input >= compare;
     }
+
     return false;
   },
 
-  lt(input: unknown, compare: number): boolean {
+  lt(input: unknown, compare: unknown): boolean {
+    if (!is.number(compare)) return false;
     if (is.numericString(input)) input = Number(input);
     if (is.number(input)) {
       return input < compare;
     }
+
     return false;
   },
 
-  lte(input: unknown, compare: number): boolean {
+  lte(input: unknown, compare: unknown): boolean {
+    if (!is.number(compare)) return false;
     if (is.numericString(input)) input = Number(input);
     if (is.number(input)) {
       return input <= compare;
     }
+
     return false;
   },
 
-  in(input: unknown, compare: string[] | number[]): boolean {
-    if (is.emptyArray(compare)) return false;
-    if (is.string(input) && is.arrayLike<string>(compare)) { 
+  in(input: unknown, compare: unknown): boolean {
+    if (!is.array(compare) || is.emptyArray(compare)) return false;
+    if (is.string(input) && is.arrayLike<string>(compare)) {
       return compare.includes(input);
     }
-    if (is.number(input) && is.arrayLike<number>(compare)) { 
+
+    if (is.number(input) && is.arrayLike<number>(compare)) {
       return compare.includes(input);
     }
+
     return false;
   },
 
-  has(input: unknown, compare: string | number): boolean {
-    if (!is.array(input)) return false;
-    if (is.string(compare) && is.arrayLike<string>(input)) { 
+  has(input: unknown, compare: unknown): boolean {
+    if (!is.array(input) || !(is.string(compare) || is.number(compare)))
+      return false;
+    if (is.string(compare) && is.arrayLike<string>(input)) {
       return input.includes(compare);
     }
-    if (is.number(compare) && is.arrayLike<number>(input)) { 
+
+    if (is.number(compare) && is.arrayLike<number>(input)) {
       return input.includes(compare);
     }
+
     return false;
   },
 
-  sw(input: unknown, compare: string): boolean {
-    return (is.string(input) && input.endsWith(compare));
+  sw(input: unknown, compare: unknown): boolean {
+    if (!is.string(compare)) return false;
+    return is.string(input) && input.endsWith(compare);
   },
 
-  ew(input: unknown, compare: string): boolean {
-    return (is.string(input) && input.startsWith(compare));
+  ew(input: unknown, compare: unknown): boolean {
+    if (!is.string(compare)) return false;
+    return is.string(input) && input.startsWith(compare);
   },
 
-  exists(input: unknown, compare: boolean): boolean {
-    const result = (is.undefined(input));
-    return (result !== compare);
+  exists(input: unknown, compare: unknown): boolean {
+    if (!is.boolean(compare)) return false;
+    const result = is.undefined(input);
+    return result !== compare;
   },
 
-  empty(input: unknown, compare: boolean): boolean {
-    const result = (
+  empty(input: unknown, compare: unknown): boolean {
+    if (!is.boolean(compare)) return false;
+    const result =
       is.emptyArray(input) ||
       is.emptyObject(input) ||
-      is.emptyStringOrWhitespace(input)
-    );
-    return (result === compare);
-  }
+      is.emptyStringOrWhitespace(input);
+    return result === compare;
+  },
 };

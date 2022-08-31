@@ -41,6 +41,7 @@ export {
   PredicateStruct,
   PredicateTuple,
   PredicateMode,
+  PredicateValue,
   where,
 } from './graph/index.js';
 

@@ -19,5 +19,6 @@ export {
   PredicateStruct,
   PredicateTuple,
   PredicateMode,
+  PredicateValue,
   where,
 } from './predicate.js';
