@@ -15,30 +15,32 @@ export interface PredicateComparisons {
   exists?: boolean;
   empty?: boolean;
 }
+
+export type PredicateMode = 'all' | 'any' | 'none';
+export type PredicateValue = number | string | boolean;
+
 export interface PredicateStruct extends PredicateComparisons {
   propertyName: string;
-  require?: PredicateCombination;
+  mode?: PredicateMode;
 }
-
-export type PredicateCombination = 'all' | 'any' | 'none';
 
 export type PredicateTuple = [
   propertyName: string,
   comparisons: PredicateComparisons,
-  require?: PredicateCombination,
+  mode?: PredicateMode,
 ];
 
 export const where = (
   property: string,
   comparisons: PredicateComparisons = { exists: true },
-  require: PredicateCombination = 'all',
-): Predicate => new Predicate(property, comparisons, require);
+  mode: PredicateMode = 'all',
+): Predicate => new Predicate(property, comparisons, mode);
 
 export class Predicate {
   constructor(
     public readonly propertyName: string,
     public readonly comparisons: PredicateComparisons = { exists: true },
-    public readonly require: PredicateCombination = 'all',
+    public readonly mode: PredicateMode = 'all',
   ) {}
 
   match(input: Entity): boolean {

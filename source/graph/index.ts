@@ -18,6 +18,6 @@ export {
   PredicateComparisons,
   PredicateStruct,
   PredicateTuple,
-  PredicateCombination,
+  PredicateMode,
   where,
 } from './predicate.js';

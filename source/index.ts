@@ -40,7 +40,7 @@ export {
   PredicateComparisons,
   PredicateStruct,
   PredicateTuple,
-  PredicateCombination,
+  PredicateMode,
   where,
 } from './graph/index.js';
 
