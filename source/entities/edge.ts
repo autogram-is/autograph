@@ -49,10 +49,6 @@ export class Edge extends Entity {
     this.target = Entity.idFromReference(target);
     this.assignId();
   }
-
-  protected getIdSeed(): unknown {
-    return [this.source, this.predicate, this.target];
-  }
 }
 
 export function isEdge(input: unknown): input is Edge {
